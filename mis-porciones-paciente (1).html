@@ -1,0 +1,1313 @@
+<title>Mis Porciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+/* Diseño minimalista elegante en tonos celestes, tema claro. Layout: una columna móvil de 430px. Abre directo en la cuenta de quien entra (sin mezclar cuentas). Cabecera fija con fecha y dos barras de avance, franja semanal, una tarjeta por grupo con estrellas (mitades; cuartos en aceites y lípidos) y agua en vasos. Hojas inferiores para equivalencias, ajustes y, solo para la creadora, el panel de pacientes. */
+:root{
+  --bg:#F5FAFD; --surface:#FFFFFF; --ink:#1E3248; --muted:#5C7188; --line:#DCE8F1;
+  --accent:#2A6AA0; --on-accent:#FFFFFF; --leaf:#5BA8D6; --water:#5BA8D6;
+  --warn:#B5532F; --warn-bg:#FBEDE6; --scrim:rgba(20,40,60,.4);
+  --g-cer:#CFE3F5; --g-cer-s:#4F86B8;
+  --g-pro:#D9DEF3; --g-pro-s:#6573B3;
+  --g-lac:#C6E7EE; --g-lac-s:#3E8FA3;
+  --g-vli:#CDEBDD; --g-vli-s:#3F9A7C;
+  --g-vge:#B8E2D4; --g-vge-s:#2F8A74;
+  --g-fru:#E3E1F4; --g-fru-s:#7A71B8;
+  --g-ace:#BFDFF0; --g-ace-s:#3A87B0;
+  --g-lip:#C9D6EB; --g-lip-s:#4C6FA3;
+  --g-azu:#DCD8F0; --g-azu-s:#8076B8;
+  --g-sup:#D3ECEF; --g-sup-s:#3A9AA6;
+  --g-cds:#E1EAF1; --g-cds-s:#6C8296;
+  --g-agu:#A9D6EE; --g-agu-s:#2F83B5;
+  --font-display:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-body:'Nunito Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.4;padding-inline:16px;-webkit-tap-highlight-color:transparent}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.app,.welcome,.splash{max-width:430px;margin:0 auto}
+.app{padding-bottom:96px}
+.field{min-height:48px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;background:var(--bg);color:var(--ink);min-width:0}
+.btn{min-height:48px;border:0;border-radius:14px;background:var(--accent);color:var(--on-accent);font-weight:700;font-size:16px;padding:0 18px}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.soft{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+
+/* Apertura y bienvenida */
+.splash{padding-block:30vh 0;display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--muted)}
+.leafmark{width:64px;height:64px;border-radius:20px;background:color-mix(in srgb,var(--leaf) 22%,transparent);display:grid;place-items:center}
+.leafmark svg{width:36px;height:36px;fill:var(--leaf)}
+.welcome{padding-block:40px 32px;display:flex;flex-direction:column;gap:18px}
+.welcome h1{margin:0;font-family:var(--font-display);font-weight:600;font-size:32px;line-height:1.1}
+.welcome p{margin:0;color:var(--muted);text-wrap:pretty}
+.welcome form{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:16px}
+.welcome label{font-weight:700;font-size:14px}
+.wstatus{font-size:13px;color:var(--muted)}
+
+/* Cabecera fija */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-inline:-16px;padding:8px 16px 10px;border-bottom:1px solid var(--line)}
+.date-row{display:flex;align-items:center;gap:0}
+.date-main{flex:1;min-width:0;text-align:center}
+.date-main h1{margin:0;font-family:var(--font-display);font-weight:600;font-size:20px;line-height:1.15;text-wrap:balance}
+.subline{display:flex;justify-content:center;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);min-height:20px}
+#goToday{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:1px 10px;font-size:12px;font-weight:700;color:var(--accent);min-height:24px}
+.icon-btn{width:42px;height:44px;border:0;background:none;border-radius:12px;display:grid;place-items:center;color:var(--ink);flex:none}
+.icon-btn:active{background:var(--line)}
+.icon-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.prog2{display:flex;gap:12px;padding-top:6px}
+.pg{flex:1;min-width:0}
+.pg-t{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.pg-t b{color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar{height:9px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--leaf);border-radius:99px;transition:width .25s ease}
+.bar.water i{background:var(--water)}
+
+/* Semana */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:10px 0 4px}
+.wd{border:0;background:none;padding:2px 0;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px}
+.wl{font-size:11px;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.wd.today .wl{color:var(--accent);font-weight:800}
+.wring{position:relative;width:38px;height:38px;border-radius:50%}
+.wring svg{position:absolute;inset:0;width:38px;height:38px;transform:rotate(-90deg)}
+.wring .tr{fill:none;stroke:var(--line);stroke-width:3}
+.wring .pr{fill:none;stroke:var(--leaf);stroke-width:3;stroke-linecap:round}
+.wring .num{position:absolute;inset:5px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.wd[aria-pressed="true"] .num{background:var(--accent);color:var(--on-accent)}
+
+/* Tarjetas */
+main{display:flex;flex-direction:column;gap:12px;padding-top:8px}
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:10px 12px 8px}
+.card.over{border-color:var(--warn)}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.info{display:flex;align-items:center;gap:10px;border:0;background:none;padding:2px 6px 2px 0;min-height:48px;min-width:0;text-align:left;flex:1}
+.chip{flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-family:var(--font-display);font-weight:600;font-size:14px;background:color-mix(in srgb,var(--c) 45%,transparent);color:var(--ink)}
+.names{display:flex;flex-direction:column;min-width:0}
+.gname{font-weight:700;font-size:16px;line-height:1.2;overflow-wrap:anywhere}
+.gsub{font-size:12.5px;color:var(--muted);line-height:1.25}
+.chev{flex:none;width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;margin-left:auto}
+.count{font-family:var(--font-display);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right;font-weight:500}
+.count b{font-size:24px;font-weight:600;color:var(--ink)}
+.card.over .count b{color:var(--warn)}
+.count span{font-size:13px;color:var(--muted)}
+.dots{display:flex;flex-wrap:wrap;margin-left:-2px}
+.dot,.plus{width:44px;height:44px;border:0;background:none;padding:0;display:grid;place-items:center}
+.dot svg,.plus svg{width:44px;height:44px;transition:transform .08s ease}
+.dot:active svg,.plus:active svg{transform:scale(.86)}
+.sfill{fill:var(--c)}
+.sline{fill:none;stroke:var(--cs);stroke-width:1.5;stroke-linejoin:round}
+.dot.extra .sline{stroke-dasharray:2.4 2}
+.plus .ring{fill:none;stroke:var(--muted);stroke-dasharray:3 4;stroke-width:2}
+.plus path{stroke:var(--muted);stroke-width:2.5;stroke-linecap:round;fill:none}
+.note{margin:0 0 6px;padding:5px 10px;border-radius:10px;font-size:13px;font-weight:700}
+.note.warn{background:var(--warn-bg);color:var(--warn)}
+.note.good{background:color-mix(in srgb,var(--leaf) 16%,transparent);color:var(--leaf)}
+.free .tags{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px}
+.free .tags span{font-size:12.5px;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--c) 38%,transparent)}
+.free-badge{flex:none;font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--cs);text-transform:uppercase}
+.eq{border-top:1px solid var(--line);margin-top:2px}
+.eq summary{min-height:48px;display:flex;align-items:center;font-weight:700;color:var(--accent);cursor:pointer}
+.eq ul{margin:0 0 8px;padding:0;list-style:none}
+.eq li{display:flex;flex-direction:column;padding:7px 0;border-top:1px solid var(--line)}
+.eq li:first-child{border-top:0}
+.eq li .a{font-weight:700;font-size:14.5px}
+.eq li .m{font-size:13px;color:var(--muted)}
+.eq h4{margin:8px 0 2px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.gl{fill:none;stroke:var(--cs);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.wfill{fill:var(--c)}
+.wctl{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0 6px}
+.wctl .field{width:96px}
+.wctl select.field{width:76px;padding-inline:8px}
+.wctl .btn{min-height:44px;font-size:15px;padding:0 14px}
+.wmsg{margin:0 0 6px;font-size:13px;color:var(--warn)}
+.wmsg:empty{display:none}
+.foot{margin:18px 4px 0;font-size:12.5px;color:var(--muted);text-wrap:pretty}
+
+/* Hojas inferiores */
+.scrim{position:fixed;inset:0;z-index:20;background:var(--scrim);opacity:0;transition:opacity .2s ease}
+.scrim.open{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-width:430px;margin:0 auto;max-height:88%;overflow:auto;background:var(--surface);border-radius:24px 24px 0 0;padding:0 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .22s ease;box-shadow:0 -8px 30px rgba(0,0,0,.2)}
+.sheet.open{transform:translateY(0)}
+.sheet-head{position:sticky;top:0;z-index:2;height:52px;display:flex;align-items:center;justify-content:flex-end;background:var(--surface);margin-inline:-6px}
+.grab{position:absolute;left:50%;top:8px;transform:translateX(-50%);width:40px;height:4px;border-radius:4px;background:var(--line)}
+.sh-title{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.sh-title h2{margin:0;font-family:var(--font-display);font-weight:600;font-size:23px;line-height:1.15}
+.sh-meta{margin:0 0 12px;color:var(--muted);font-size:14px}
+.gsearch{width:100%;margin-bottom:6px}
+.gsec h3{margin:16px 0 4px;font-family:var(--font-display);font-weight:600;font-size:17px}
+.macro{margin:0 0 6px;font-size:13px;color:var(--accent);font-weight:700}
+.subgrp h4{margin:10px 0 2px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.sheet ul{margin:0;padding:0;list-style:none}
+.sheet li{display:flex;flex-direction:column;padding:8px 0;border-top:1px solid var(--line)}
+.sheet li:first-child{border-top:0}
+.sheet li .a{font-weight:700;font-size:15px}
+.sheet li .m{font-size:13.5px;color:var(--muted)}
+.mv{margin-top:6px;min-height:44px;align-self:flex-start;max-width:100%}
+.editbar{display:flex;flex-direction:column;gap:6px;margin:0 0 10px}
+.editbar .btn{min-height:44px;font-size:15px}
+.none{margin:16px 0;text-align:center;color:var(--muted)}
+.fine{margin:14px 0 0;font-size:12.5px;color:var(--muted);text-wrap:pretty}
+.set-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.set-row:first-of-type{border-top:0}
+.set-row .gname{flex:1;min-width:0}
+.step{display:flex;align-items:center;gap:2px}
+.step button{width:44px;height:44px;border:1.5px solid var(--line);background:var(--bg);border-radius:12px;font-size:22px;line-height:1;font-weight:700}
+.step button:active{background:var(--line)}
+.step button:disabled{opacity:.35}
+.step output{min-width:44px;text-align:center;font-family:var(--font-display);font-weight:600;font-size:20px;font-variant-numeric:tabular-nums}
+.set-block{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.set-block label{font-weight:700;font-size:14px}
+.set-block .field{width:100%}
+.set-h{margin:18px 0 4px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.ghost{width:100%;min-height:44px;margin-top:10px;border:1.5px solid var(--line);background:none;border-radius:12px;font-weight:700;color:var(--warn)}
+
+/* Panel de pacientes (solo creadora) */
+.prow{display:flex;align-items:center;gap:10px;width:100%;min-height:64px;padding:8px 0;border:0;border-top:1px solid var(--line);background:none;text-align:left}
+.prow:first-of-type{border-top:0}
+.prow .names{flex:1}
+.pstat{font-family:var(--font-display);font-variant-numeric:tabular-nums;text-align:right;line-height:1.2}
+.pstat b{display:block;font-size:20px;font-weight:600}
+.pstat span{font-size:12px;color:var(--muted)}
+.back{display:inline-flex;align-items:center;gap:4px;min-height:44px;border:0;background:none;font-weight:700;color:var(--accent);padding:0}
+.pnav{display:flex;align-items:center;justify-content:space-between;gap:4px;margin:4px 0 8px}
+.pnav b{font-family:var(--font-display);font-weight:600;font-size:18px;text-align:center}
+.ro{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
+.ro:first-of-type{border-top:0}
+.ro .names{flex:1}
+.rostars{display:flex;flex-wrap:wrap;margin-top:2px}
+.rostars svg{width:28px;height:28px}
+.ro .count b{font-size:19px}
+.mchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.mchip{min-height:40px;padding:0 16px;border:1px solid var(--line);background:var(--surface);border-radius:99px;font-weight:700;color:var(--muted)}
+.mchip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.lockinfo{margin:6px 0 4px;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent);font-size:13px;font-weight:700}
+.chk{display:flex;align-items:center;gap:10px;min-height:48px;font-weight:700}
+.chk input{width:22px;height:22px;accent-color:var(--accent)}
+.edpanel{margin-top:20px;padding-top:4px;border-top:1px solid var(--line)}
+.badge-info{flex:none;font-size:12px;font-weight:700;color:var(--cs)}
+
+/* Navegación inferior, información y suplementos */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;max-width:430px;margin:0 auto;display:flex;gap:6px;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line)}
+.tab{flex:1;min-height:48px;border:0;border-radius:14px;background:none;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tab[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
+.infoform{display:flex;flex-direction:column;gap:14px;padding-top:8px}
+.infoform .fld{display:flex;flex-direction:column;gap:6px}
+.infoform label{font-weight:700;font-size:14px}
+.infoform .hint{font-weight:400;color:var(--muted);font-size:12.5px}
+.infoform textarea.field{min-height:84px;padding:10px 12px;resize:vertical;line-height:1.4}
+.infoform .two{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+.infoform .saved{font-size:12.5px;color:var(--muted)}
+.sp-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+.sp-row:first-of-type{border-top:0}
+.sp-ck{flex:none;width:44px;height:44px;border-radius:12px;border:1.5px solid var(--cs);background:var(--surface);display:grid;place-items:center}
+.sp-ck svg{width:24px;height:24px;stroke:var(--on-accent);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.sp-ck[aria-pressed="true"]{background:var(--cs)}
+.sp-ck[aria-pressed="true"] svg{opacity:1}
+.sp-f{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.sp-f .field{min-height:40px;width:100%}
+.sp-del{flex:none;width:40px;height:40px;border:0;background:none;border-radius:10px;color:var(--muted);font-size:22px}
+.sp-add{width:100%;margin-top:8px}
+.pinfo{margin:10px 0;padding:10px 12px;border-radius:14px;background:var(--bg);border:1px solid var(--line);font-size:14px}
+.pinfo dt{font-weight:700;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:8px}
+.pinfo dd{margin:2px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <clipPath id="cp25"><rect x="0" y="0" width="7" height="24"/></clipPath>
+  <clipPath id="cp50"><rect x="0" y="0" width="12" height="24"/></clipPath>
+  <clipPath id="cp75"><rect x="0" y="0" width="17" height="24"/></clipPath>
+</defs></svg>
+
+<section class="splash" id="splash" role="status">
+  <div class="leafmark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 4C11 4 5 8.5 5 15c0 1.4.3 2.6.8 3.6C4.7 19.4 4 20.6 4 22h2c0-1 .5-1.8 1.3-2.4 1 .3 2.2.4 3.7.4 7 0 10-6 10-16z"/></svg></div>
+  <span>Abriendo tu cuenta…</span>
+</section>
+
+<section class="welcome" id="welcome" hidden>
+  <div class="leafmark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 4C11 4 5 8.5 5 15c0 1.4.3 2.6.8 3.6C4.7 19.4 4 20.6 4 22h2c0-1 .5-1.8 1.3-2.4 1 .3 2.2.4 3.7.4 7 0 10-6 10-16z"/></svg></div>
+  <h1>Mis Porciones</h1>
+  <p>Registra cada día lo que comes y bebes, y mira tu avance. Crea tu perfil para empezar. Todo se guarda en este teléfono, y tu profesional solo ve tu información y tu progreso si le envías tu resumen desde Ajustes.</p>
+  <form id="wForm" autocomplete="off">
+    <label for="wName">¿Cómo te llamas?</label>
+    <input class="field" id="wName" type="text" maxlength="40" placeholder="Tu nombre" autocomplete="given-name">
+    <button class="btn" id="wBtn" type="submit">Crear mi cuenta</button>
+    <p class="wstatus" id="wStatus" role="status"></p>
+  </form>
+</section>
+
+<div class="app" id="app" hidden>
+  <header class="top">
+    <div class="date-row">
+      <button class="icon-btn" id="prev" aria-label="Día anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="date-main">
+        <h1 id="dateTitle"></h1>
+        <div class="subline"><span id="dateSub"></span><button id="goToday" hidden>Ir a hoy</button></div>
+      </div>
+      <button class="icon-btn" id="next" aria-label="Día siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      <button class="icon-btn" id="openPatients" aria-label="Pacientes" hidden><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.2a3 3 0 0 1 0 5.6M18 14.8c1.8.7 3 2.3 3 4.7"/></svg></button>
+      <button class="icon-btn" id="openSettings" aria-label="Metas y ajustes"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
+    </div>
+    <div class="prog2">
+      <div class="pg"><div class="pg-t"><span>Porciones</span><b id="ptxt"></b></div><div class="bar" id="pbar" role="progressbar" aria-label="Avance de porciones" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="pfill"></i></div></div>
+      <div class="pg"><div class="pg-t"><span>Agua</span><b id="wtxt"></b></div><div class="bar water" id="wbar" role="progressbar" aria-label="Avance de agua" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="wfillbar"></i></div></div>
+    </div>
+  </header>
+  <nav class="week" id="week" aria-label="Semana"></nav>
+  <main id="list"></main>
+  <main id="infoView" hidden></main>
+  <p class="foot">Cada toque en una estrella la llena un poco más: media estrella y completa; en aceites y alimentos ricos en lípidos se llena por cuartos (¼, ½, ¾ y completa). Otro toque la vacía. El agua se llena en vasos. En verduras de libre consumo solo anotas cuántas porciones llevas. Toca el nombre de un grupo para ver sus equivalencias.</p>
+<nav class="tabbar" id="tabbar" aria-label="Secciones"><button class="tab" data-tab="info" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>Mi información</button><button class="tab" data-tab="day" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 17l-5.6 3 1.3-6.2L3 9.5l6.3-.7z"/></svg>Mi día</button></nav>
+</div>
+
+
+<div class="scrim" id="scrim" hidden></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Detalle" hidden>
+  <div class="sheet-head"><div class="grab"></div><button class="icon-btn" id="sheetClose" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div id="sheetBody"></div>
+</section>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Equivalencias del documento "Sistema de Porciones de Intercambio" ---------- */
+/* "#Título~kcal|carb|lípidos|prot" abre una sección; "-Subtítulo" abre un subgrupo; "alimento|medida casera|gramos o cc" es una fila. */
+var RAW={};
+RAW.cer='#Cereales y pastas crudas~140|30|1|3\n'+
+'Arroz y arroz integral|3 cucharadas o ¼ taza|40 g\nAvena|6 cucharadas o ½ taza|40 g\nMaicena|3 cucharadas o ¼ taza|30 g\nSémola|3 cucharadas o ¼ taza|40 g\nTapioca|3 cucharadas o ¼ taza|40 g\nChuchoca|3 cucharadas o ¼ taza|40 g\nChuño|4 cucharadas o ¼ taza|40 g\nFideos|½ taza|40 g\nHarina y harina tostada|4 cucharadas o ¼ taza|40 g\nQuínoa|4 cucharadas o ¼ taza|40 g\n'+
+'#Cereales y pastas cocidas~140|30|1|3\n'+
+'Arroz|¾ taza|100 g\nArroz integral|¾ taza|120 g\nFideos|¾ taza|110 g\nFideos integrales|¾ taza|110 g\nMote de maíz|¾ taza|120 g\nMote de trigo|¾ taza|100 g\n'+
+'#Pan, galletas y cereales de desayuno~140|30|1|3\n'+
+'Marraqueta / hallulla|½ unidad|50 g\nPan integral hallulla|1 unidad chica|60 g\nPan amasado|¼ unidad|50 g\nPan centeno molde|1 ¼ rebanada|60 g\nPan molde blanco|3 rebanadas|60 g\nPan molde integral|1 ¼ rebanada|50 g\nPan dulce de huevo|¼ unidad|50 g\nGalleta soda / agua|8 unidades|40 g\nGalleta soda integral|7 unidades|40 g\nCerelac|9 medidas Nestlé|44 g\nNestum|9 medidas Nestlé|35 g\nCorn flakes|1 ½ taza|40 g\nCereales azucarados (estrellitas, chocapic)|1 taza|34 g\nNatur|1 bolsa chica|35 g\nGalletas de champagna|5 unidades|20 g\nCabritas|1 ½ tazas|35 g\n'+
+'#Leguminosas frescas, papas y otros~140|30|1|3\n'+
+'Arvejas congeladas cocidas|1 ½ taza|190 g\nArvejas crudas|1 ½ taza|190 g\nArvejas enlatadas|1 ½ taza|190 g\nChoclo cocido|1 taza|160 g\nChoclo crudo|1 taza|120 g\nChoclo congelado|1 ¼ taza|150 g\nPorotos granados crudos|¾ taza|120 g\nCastaña cruda|4 unidades|35 g\nPiñón|¾ taza o 30 unidades|80 g\nHabas cocidas|1 taza|150 g\nCamote cocido|½ taza|120 g\nPapa cocida|1 unidad regular|150 g\nPapa cruda|1 unidad regular|150 g\n'+
+'#Cereales procesados: galletas bajas en grasa~185|30|6|3\n'+
+'Coco|7 unidades|41 g\nGrill|1 envase chico|50 g\nLimón, Maravilla y Niza|8 unidades|40 g\nMuseo|6 unidades|38 g\nVino|7 unidades|40 g\n'+
+'#Cereales procesados: galletas altas en grasa~230|30|11|3\n'+
+'Alteza|6 unidades|40 g\nKuky|6 unidades|48 g\nTritón|4 unidades|45 g\nMorocha|13 unidades|46 g\nNegrita|2 unidades|46 g\n';
+
+RAW.pro='#Carnes altas en grasa~120|1|8|11\n'+
+'-Vacuno\nCazuela, plateada, lomo vetado, guachalomo, asado de tira, osobuco, sobrecostilla|trozo de 6×6×1|50 g\nCarne molida corriente|2 ½ cucharadas|50 g\n'+
+'-Cordero\nCarne de cordero|trozo de 6×6×1|50 g\nChuleta de cordero|trozo de 6×6×1|50 g\nCazuela de cordero|trozo de 6×6×1|50 g\n'+
+'-Cerdo\nChuleta de cerdo|trozo de 6×6×1|50 g\nCazuela de cerdo|trozo de 6×6×1|50 g\n'+
+'-Vísceras\nHígado de vacuno cocido|trozo de 6×6×2|60 g\nHígado de cerdo cocido|trozo de 6×6×2|60 g\nLengua cocida|trozo de 6×6×1|60 g\nUbre|trozo de 6×6×1|60 g\nSesos cocidos|½ taza|80 g\n'+
+'-Pescados\nTrucha, sierra, salmón, cojinova, mero|trozo de 10×6×1|80 g\nAtún en aceite|1/3 taza|50 g\nJurel en aceite o al natural|1/3 taza|50 g\nSardina en aceite|1/3 taza|50 g\n'+
+'-Mariscos\nCholgas en aceite|6 unidades|60 g\nChoritos en aceite|14 unidades|60 g\nErizos|6 lenguas|60 g\n'+
+'-Carnes procesadas\nJamón de cerdo|1 tajada|40 g\nJamón crudo|1 tajada|30 g\nLonganiza|1 rodela de 4 cm|45 g\nMortadela|3 tajadas|60 g\nSalame|1 tajada|20 g\nVienesa|1 unidad|40 g\nVienesa de pavo|1 unidad|40 g\nPrieta|1 unidad de 4 cm|100 g\nQueso de cabeza|1 tajada|40 g\n'+
+'#Carnes bajas en grasa~65|1|2|11\n'+
+'-Vacuno\nFilete, asiento picana, pollo ganso, posta negra, posta rosada, lomo liso|trozo de 6×6×1|50 g\nCarne molida tártara|2 ½ cucharadas|50 g\n'+
+'-Ave\nPollo (pechuga y pierna)|trozo de 6×6×1|50 g\nPavo pierna|trozo de 6×6×1|50 g\nPato cocido sin piel|trozo de 6×6×1|40 g\n'+
+'-Cordero\nPulpa de cordero|trozo de 6×6×1|50 g\n'+
+'-Cerdo\nPulpa de cerdo|trozo de 6×6×1|50 g\nFilete de cerdo|trozo de 6×6×1|50 g\n'+
+'-Otras carnes\nCarne de conejo cruda|trozo de 6×6×1|60 g\nCarne de conejo horneado|trozo de 6×6×1|60 g\nCarne de caballo cruda|trozo de 6×6×1|50 g\nCharqui|¼ taza|18 g\n'+
+'-Vísceras\nGuatita cruda|¾ taza|60 g\nContre pollo cocido|2 ½ unidades|50 g\nCorazón cocido|trozo de 6×6×1|50 g\nRiñones cocidos|2 lóbulos|50 g\nCriadillas de vacuno|2 unidades|100 g\n'+
+'-Pescados\nReineta, pejerrey, albacora, merluza, lenguado, corvina, congrio, pejegallo, jurel|trozo de 10×6×1|80 g\nAtún en agua|1/3 taza|60 g\n'+
+'-Mariscos\nCamarón|½ taza o 20 unidades|60 g\nCholga enlatada en agua|1 unidad regular|60 g\nChoritos en agua|6 unidades regulares|60 g\nAlmejas|6 unidades regulares|60 g\nAlmejas enlatadas en agua|5 unidades regulares|60 g\nMachas enlatadas en agua|5 unidades regulares|50 g\nNavajuelas|6 unidades regulares|60 g\nJaiba|1/3 taza|60 g\nLangostinos|1/3 taza|50 g\nLocos|1 unidad chica|60 g\nPiures|6 lenguas|100 g\nOstra|8 unidades|70 g\n'+
+'-Carnes procesadas\nJamón de pavo|1 tajada|50 g\nProteína de soya|¼ taza o 5 cucharadas|25 g\n'+
+'-Huevos\nHuevo|1 unidad|50 g\nClara de huevo|3 unidades|100 g\nHuevo de codorniz|2 unidades|25 g\n'+
+'#Leguminosas secas~170|30|1|11\n'+
+'-Cocidas\nGarbanzos|¾ taza|130 g\nLentejas|¾ taza|140 g\nPorotos|¾ taza|100 g\nArvejas|¾ taza|100 g\n'+
+'-Crudas\nGarbanzos|4 cucharadas o ¼ taza|50 g\nLentejas|4 cucharadas o ¼ taza|50 g\nPorotos|4 cucharadas o ¼ taza|50 g\nArvejas|4 cucharadas o ¼ taza|50 g\nHabas|4 cucharadas o ¼ taza|60 g\n';
+
+RAW.lac='#Lácteos enteros~110|9|6|5\n'+
+'Leche entera líquida|1 taza|200 cc\nLeche en polvo 26%|3 cucharaditas rasas o 2 cucharadas colmadas|20 g\nYogur natural|1 unidad|150 cc\nLeche evaporada|½ taza|80 cc\nLeche de cabra|½ taza|80 cc\nLeche Purita Cereal|3 cucharaditas rasas o 2 cucharadas colmadas|20 g\n'+
+'#Lácteos semidescremados~85|9|3|5\n'+
+'Leche semidescremada líquida|1 taza|200 cc\nLeche semidescremada en polvo 12-18%|3 cucharaditas rasas o 2 cucharadas colmadas|20 g\nLeche saborizada fluida|1 taza|200 cc\nYogur batido diet|1 unidad|150 cc\nQuesillo|1 rodela de 3 cm|60 g\n'+
+'#Lácteos descremados~70|10|0|7\n'+
+'Leche descremada líquida 0-2%|1 taza|200 cc\nLeche en polvo descremada 0-2%|3 cucharaditas rasas o 2 cucharadas colmadas|20 cc\nLeche cultivada descremada|1 taza|200 cc\n'+
+'#Quesos~80|1|6|5\n'+
+'Queso gauda|½ lámina|25 g\nQueso chanco, mantecoso, cheddar y suizo|½ lámina|20 g\nQueso parmesano|3 cucharadas rasas|15 g\nQueso de cabra|½ lámina|25 g\nRicota|2 cucharadas|30 g\nQuesos untables|2 cucharadas|25 g\n'+
+'#Lácteos semidescremados ricos en carbohidratos~167|30|3|5\n'+
+'Yogur batido simple con sabor|1 unidad|175 cc\nYogur con trozos de frutas|1 unidad|175 cc\nYogur con pulpa de frutas|1 unidad|150 cc\nYogur americano|1 unidad|140 cc\nLeche condensada|2 ½ cucharadas|50 cc\nLeche asada|1 unidad|120 g\nLeche nevada|1 unidad|130 g\nMaicena con leche|1 unidad|75 g\nFlan promedio|1 unidad|130 g\nSémola con leche|1 unidad|150 g\nArroz con leche|1 unidad|150 g\nLeche de burra|1 ¾ taza|350 cc\nChandelle|1 unidad|120 g\n';
+
+RAW.vli='#Verduras de libre consumo\n'+
+'Acelga cruda|1 taza|50 g\nEspinaca cruda|1 taza|50 g\nZapallito italiano crudo|1 taza|100 g\nAchicoria|1 taza|50 g\nApio|1 taza|70 g\nEndivia|1 taza|50 g\nLechuga|1 taza|50 g\nPepino ensalada|1 taza|100 g\nPenca|½ taza|50 g\nLuche|2 tazas|25 g\nPimentón verde y rojo|½ taza|60 g\nRabanito|5 unidades|50 g\nRepollo|1 taza|50 g\nCochayuyo seco|1 taza|25 g\nUlte|1 taza|25 g\nAjo|8 dientes|8 g\n';
+
+RAW.cds='#Condimentos y otros\n'+
+'Mostaza||\nPerejil||\nCilantro||\nOrégano||\nCiboulette||\nVinagre||\nSalsa de soya||\nSalsa de ají||\nCaldos||\nCafé||\nTé||\nMate||\nAgua de hierbas||\n'+
+'#Sustitutos dulces\n'+
+'Edulcorantes naturales||\nJaleas sin azúcar||\nBebidas sin azúcar||\nRefrescos en polvo sin azúcar||\n';
+
+RAW.vge='#Verduras en general cocidas~30|5|0|2\n'+
+'Acelga|½ taza|110 g\nAlcachofa|1 unidad chica|50 g\nBerenjena|1 ½ taza|100 g\nBetarraga|½ taza|90 g\nBrócoli|1 taza|100 g\nChampiñones|¾ taza|100 g\nChampiñones enlatados|¾ taza|100 g\nColiflor|1 taza|100 g\nEspárragos|5 unidades regulares|100 g\nEspinaca|½ taza|130 g\nPepinillos dill|3 unidades|120 g\nPoroto verde|¾ taza|70 g\nPoroto verde enlatado|½ taza|110 g\nRepollitos de Bruselas|½ taza|100 g\nZanahoria|1 taza|50 g\nZapallo italiano|1 taza|150 g\nZapallo camote|½ taza|70 g\nSalsa de tomate o ketchup|2 cucharadas|30 g\n'+
+'#Verduras en general crudas~30|5|0|2\n'+
+'Cebolla|¾ taza|60 g\nTomate|1 unidad regular|120 g\nBetarraga|1 taza|130 g\nChampiñones|1 ½ taza|100 g\nZanahoria|½ taza|50 g\nColiflor cruda|½ taza|50 g\n';
+
+RAW.fru='#Frutas frescas y en conserva~65|15|0|1\n'+
+'Caqui|1 unidad chica|90 g\nCereza|15 unidades|90 g\nChirimoya|¼ taza|90 g\nCiruela|3 unidades|110 g\nDamasco|3 unidades|120 g\nDurazno|1 unidad regular|130 g\nDurazno en conserva|1 ½ unidad|80 g\nFrambuesa|1 taza|130 g\nGrosellas|½ taza|120 g\nHigos frescos|2 unidades|80 g\nKiwi|2 unidades chicas|100 g\nLúcuma pasta|2 cucharadas|50 g\nManzana|1 unidad chica|100 g\nMelón|1 taza|180 g\nLimón|3 unidades|160 g\nMembrillo|1 unidad chica|100 g\nMora|½ taza|120 g\nNaranja|1 unidad regular|120 g\nNíspero|7 unidades|120 g\nPapaya|3 unidades|400 g\nPera|1 unidad chica|100 g\nPiña|¾ taza o 1 rodela 20 × 2 cm|120 g\nPiña enlatada|¾ taza o 1 rodela 20 × 2 cm|80 g\nPlátano|½ unidad|60 g\nPepino dulce|1 unidad grande|240 g\nSandía|1 taza|200 g\nTuna|2 unidades regulares|150 g\nUva|10 unidades|90 g\n'+
+'#Frutas desecadas~65|15|0|1\n'+
+'Higos secos|2 unidades|25 g\nPasas|20 unidades|20 g\nHuesillos|2 unidades|25 g\nCiruelas secas|2 ½ unidades|25 g\nPera desecada|7 rodelas|25 g\nManzana desecada|7 rodelas|25 g\n'+
+'#Jugo de frutas~65|15|0|1\n'+
+'Jugo de limón|¾ taza|150 cc\nJugo de naranja|¾ taza|150 cc\nJugo de pomelo|¾ taza|150 cc\n';
+
+RAW.ace='#Aceites y grasas~180|0|20|0\n'+
+'-Principalmente poliinsaturados (más del 40 % de sus AG son n-6)\nAceite de maíz, maravilla y soya|4 cucharaditas|20 cc\n'+
+'-Principalmente monoinsaturados (más del 40 % de sus AG)\nAceite de oliva, canola y raps|4 cucharaditas|20 cc\n'+
+'-Principalmente saturados (más del 40 % de sus AG)\nMantequilla, margarina|4 cucharaditas|24 g\nManteca de cerdo y vegetal|2 cucharadas|20 g\nPaté|2 cucharadas rasas|40 g\nCrema espesa|4 cucharadas rasas|70 g\nMayonesa|1 cucharada|28 g\nMargarina diet|4 cucharaditas|30 g\nTocino|1 ½ tajada|30 g\n';
+
+RAW.lip='#Alimentos ricos en lípidos~175|5|15|5\n'+
+'Aceitunas|11 unidades|115 g\nPalta|3 cucharadas|90 g\nManí|30 unidades|30 g\nPistachos|40 unidades|30 g\nAlmendras|26 unidades|25 g\nNueces|5 unidades|25 g\nAvellana|50 unidades|30 g\n';
+
+RAW.azu='#Azúcares~20|5|0|0\n'+
+'Azúcar|1 cucharadita|5 g\nMiel de abeja|1 cucharadita|6 g\nMiel de palma|1 cucharadita|6 g\nMermelada / dulce de membrillo|1 cucharadita|10 g\nManjar|1 cucharadita|10 g\nBebida|¼ taza|50 cc\nJalea en polvo|1 cucharadita|5 g\nJugo en polvo|1 cucharadita|5 g\nNéctar promedio|¼ taza|50 cc\nJugo larga vida|¼ taza|50 cc\nJugo diet promedio|1 ½ taza|120 cc\nHelado de agua|¼ unidad|25 g\nPulpa de fruta|¼ taza|50 cc\n'+
+'#Azúcares grupo N° 1~130|20|5|2\n'+
+'Chocolito|1 unidad|85 g\nHolliday|1 unidad|90 g\nCrazy|1/3 unidad|41,6 g\nCola de tigre|1 unidad|80 g\nCassata|1 porción regular|140 g\n'+
+'#Azúcares grupo N° 2~180|20|10|2\n'+
+'Danky|½ unidad|70 g\nTorta nougat|1 porción regular|100 g\nChocolate Capri|1 unidad chica|40 g\nSuper Ocho|1 unidad|25 g\nPrestigio|1 unidad|35 g\nMilkibar|1 unidad|25 g\nAlfajor|1 unidad|40 g\nBerlín|¼ unidad|50 g\nPie de limón|¼ unidad|50 g\nStrudel de manzana|¼ unidad|50 g\nChocolate con maní o almendras|1 unidad|35 g\nCremino|1 unidad|85 g\nChomp|½ caja|120 g\nSustancias simples|4 unidades|30 g\n';
+
+function parse(raw){
+  var secs=[],sec=null,grp=null;
+  raw.split('\n').forEach(function(line){
+    line=line.trim();if(!line)return;
+    if(line.charAt(0)==='#'){
+      var p=line.slice(1).split('~');
+      sec={title:p[0].trim(),macro:p[1]?p[1].split('|'):null,groups:[]};secs.push(sec);grp=null;
+    }else if(line.charAt(0)==='-'){
+      grp={sub:line.slice(1).trim(),rows:[]};sec.groups.push(grp);
+    }else{
+      if(!grp){grp={sub:null,rows:[]};sec.groups.push(grp)}
+      var r=line.split('|');grp.rows.push({a:r[0],m:r[1]||'',g:r[2]||''});
+    }
+  });
+  return secs;
+}
+var GUIDES={};
+Object.keys(RAW).forEach(function(k){GUIDES[k]=parse(RAW[k])});
+GUIDES.agu=[{title:'Medidas caseras del sistema',macro:null,groups:[{sub:null,rows:[
+  {a:'Cuchara sopera corriente',m:'10 cc',g:''},
+  {a:'Cucharadita de té corriente',m:'5 cc',g:''},
+  {a:'Taza',m:'200 cc en líquido',g:''},
+  {a:'Vaso',m:'180 cc en líquido',g:''}
+]}]}];
+
+/* Secciones cuya clasificación por contenido de grasa puede cambiar la creadora */
+var FAT={
+  pro:{titles:['Carnes altas en grasa','Carnes bajas en grasa'],labels:['Altas en grasa','Bajas en grasa']},
+  lac:{titles:['Lácteos enteros','Lácteos semidescremados','Lácteos descremados'],labels:['Enteros','Semidescremados','Descremados']}
+};
+
+var GROUPS=[
+  {id:'cer',name:'Cereales y tubérculos',ab:'Ce',kind:'stars',target:6,sub:'Cereales, pan, leguminosas frescas y papas'},
+  {id:'pro',name:'Proteínas',ab:'Pr',kind:'stars',target:4,sub:'Carnes, huevos y leguminosas secas'},
+  {id:'lac',name:'Lácteos y quesos',ab:'Lá',kind:'stars',target:3,sub:'Enteros, semidescremados, descremados y quesos'},
+  {id:'vli',name:'Verduras de libre consumo',ab:'VL',kind:'free',sub:'Anota cuántas porciones llevas, sin meta'},
+  {id:'vge',name:'Verduras de consumo general',ab:'VG',kind:'stars',target:3,sub:'Cocidas y crudas'},
+  {id:'fru',name:'Frutas',ab:'Fr',kind:'stars',target:2,sub:'Frescas, desecadas y jugos'},
+  {id:'ace',name:'Aceites y grasas',ab:'Ac',kind:'stars',q:true,target:3,sub:'Aceites, mantequilla, mayonesa'},
+  {id:'lip',name:'Alimentos ricos en lípidos',ab:'Li',kind:'stars',q:true,target:1,sub:'Palta, frutos secos y aceitunas'},
+  {id:'azu',name:'Azúcares',ab:'Az',kind:'stars',target:2,sub:'Azúcares y otros (moderación)'},
+  {id:'cds',name:'Condimentos y sustitutos dulces',ab:'Co',kind:'info',sub:'Sin aporte de macronutrientes'},
+  {id:'agu',name:'Agua',ab:'Ag',kind:'water',sub:'Vasos, o escribe la cantidad en cc o ml'}
+];
+var STARS=GROUPS.filter(function(g){return g.kind==='stars'});
+var INFO=[
+  {id:'age',label:'Edad',max:3},
+  {id:'gender',label:'Género',max:30},
+  {id:'goals',label:'Objetivos',max:600},
+  {id:'activity',label:'Actividades',max:600},
+  {id:'work',label:'Trabajo o estudio',max:300},
+  {id:'allergies',label:'Alergias alimentarias',max:600},
+  {id:'meds',label:'Medicamentos que consumo',max:600},
+  {id:'supps',label:'Suplementos que consumo',max:600}
+];
+var view='info';
+var PRO=false;
+var LOGIDS=STARS.map(function(g){return g.id}).concat(['vli']);
+function groupById(id){for(var i=0;i<GROUPS.length;i++){if(GROUPS[i].id===id)return GROUPS[i]}return null}
+
+var DAYS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+var MONTHS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+var WL=['L','M','M','J','V','S','D'];
+var LS_BASE='mis-porciones-v2';
+var MAX_SLOTS=16;
+var STAR='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z';
+var $=function(id){return document.getElementById(id)};
+
+function pad(n){return n<10?'0'+n:''+n}
+function keyOf(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function fromKey(k){var p=k.split('-').map(Number);return new Date(p[0],p[1]-1,p[2])}
+function addDays(d,n){return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n)}
+function todayKey(){return keyOf(new Date())}
+function fmtN(n){var r=Math.round(n*4)/4;return String(r).replace('.',',')}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function nrm(s){return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}
+function dateLong(k){var d=fromKey(k);return DAYS[d.getDay()]+' '+d.getDate()+' de '+MONTHS[d.getMonth()]}
+var QLABEL={0:'vacía',0.25:'un cuarto',0.5:'media',0.75:'tres cuartos',1:'completa'};
+
+/* ---------- Estado de la cuenta ---------- */
+function defaults(){
+  var t={};STARS.forEach(function(g){t[g.id]=g.target});
+  return {pid:'',profile:null,info:{},supps:[],targets:t,water:{goal:2000,glass:200,unit:'ml'},logs:{},updatedAt:0,assignedAt:0};
+}
+function q4(x){return x===1?1:x===0.75?0.75:x===0.5?0.5:x===0.25?0.25:0}
+function normalize(s){
+  var base=defaults();
+  if(!s||typeof s!=='object')return base;
+  if(s.profile&&typeof s.profile.name==='string'&&s.profile.name.trim())base.profile={name:s.profile.name.trim().slice(0,40)};
+  if(typeof s.pid==='string'&&/^[a-z0-9]{6,20}$/.test(s.pid))base.pid=s.pid;
+  if(s.info&&typeof s.info==='object'){
+    INFO.forEach(function(f){if(typeof s.info[f.id]==='string'&&s.info[f.id].trim())base.info[f.id]=s.info[f.id].slice(0,f.max)});
+  }
+  if(Array.isArray(s.supps)){
+    s.supps.slice(0,20).forEach(function(x){
+      if(x&&typeof x.id==='string'&&/^[a-z0-9]{1,12}$/.test(x.id))base.supps.push({id:x.id,name:String(x.name||'').slice(0,40),dose:String(x.dose||'').slice(0,40)});
+    });
+  }
+  STARS.forEach(function(g){
+    var v=s.targets&&Number(s.targets[g.id]);
+    if(isFinite(v)&&v>=0&&v<=12)base.targets[g.id]=Math.round(v*2)/2;
+  });
+  if(s.water&&typeof s.water==='object'){
+    var go=Number(s.water.goal),gl=Number(s.water.glass);
+    if(isFinite(go)&&go>=0&&go<=10000)base.water.goal=Math.round(go);
+    if(isFinite(gl)&&gl>=50&&gl<=1000)base.water.glass=Math.round(gl);
+    if(s.water.unit==='cc'||s.water.unit==='ml')base.water.unit=s.water.unit;
+  }
+  if(s.logs&&typeof s.logs==='object'){
+    Object.keys(s.logs).forEach(function(k){
+      var day=s.logs[k],out={};
+      if(!day||typeof day!=='object')return;
+      LOGIDS.forEach(function(id){
+        var a=day[id];
+        if(Array.isArray(a)){
+          var c=a.slice(0,MAX_SLOTS).map(q4);
+          while(c.length&&c[c.length-1]===0)c.pop();
+          if(c.length)out[id]=c;
+        }
+      });
+      if(Array.isArray(day.sup)){
+        var ids=day.sup.filter(function(x){return typeof x==='string'&&/^[a-z0-9]{1,12}$/.test(x)}).slice(0,20);
+        if(ids.length)out.sup=ids;
+      }
+      var w=Number(day.agu);
+      if(isFinite(w)&&w>0)out.agu=Math.min(Math.round(w),30000);
+      if(Object.keys(out).length)base.logs[k]=out;
+    });
+  }
+  base.updatedAt=Number(s.updatedAt)||0;
+  base.assignedAt=Number(s.assignedAt)||0;
+  return base;
+}
+var state=defaults();
+var ready=false;                 /* ya se sabe quién entró (o no hay cuenta) */
+var lsKey=null,myId=null,isOwner=false;
+var sel=todayKey();
+var sheetMode='',lastFocus=null,confirmClear=false,confirmTimer=0;
+var cloudStatus='pending',dbApi=null,cloudRef=null,mirrorRef=null,catRef=null;
+var pushing=false,dirty=false,timer=0;
+var prefillName='',nameTouched=false,wMsg='',freeOpen=false;
+var allowedLists={},guideLv='',overrides={},editMode=false,guideGid=null,guideMode='',lockedTargets=false,eqOpen={};
+var pat={list:null,sel:null,day:null,err:''};
+
+function loadLocal(key){try{return normalize(JSON.parse(localStorage.getItem(key)))}catch(e){return defaults()}}
+function saveLocal(){if(!lsKey)return;try{localStorage.setItem(lsKey,JSON.stringify(state))}catch(e){}}
+function changed(){state.updatedAt=Date.now();saveLocal();scheduleCloud()}
+function hasProfile(){return !!(state.profile&&state.profile.name)}
+
+function getArr(k,gid,st){st=st||state;var d=st.logs[k];return d&&d[gid]?d[gid].slice():[]}
+function cleanDay(k){var d=state.logs[k];if(d&&!Object.keys(d).length)delete state.logs[k]}
+function setArr(k,gid,arr){
+  while(arr.length&&arr[arr.length-1]===0)arr.pop();
+  var d=state.logs[k]||(state.logs[k]={});
+  if(arr.length)d[gid]=arr;else delete d[gid];
+  cleanDay(k);
+}
+function getWater(k,st){st=st||state;var d=st.logs[k];return d&&d.agu?d.agu:0}
+function setWater(k,ml){
+  ml=Math.max(0,Math.min(30000,Math.round(ml)));
+  var d=state.logs[k]||(state.logs[k]={});
+  if(ml>0)d.agu=ml;else delete d.agu;
+  cleanDay(k);
+}
+function sum(a){return a.reduce(function(x,y){return x+y},0)}
+function dayInfo(k,st){
+  st=st||state;
+  var tot=0,done=0,over=0,ratios=[];
+  STARS.forEach(function(g){
+    var t=st.targets[g.id],c=sum(getArr(k,g.id,st));
+    tot+=t;done+=Math.min(c,t);if(c>t)over++;
+    if(t>0)ratios.push(Math.min(c/t,1));
+  });
+  var goal=st.water.goal,ml=getWater(k,st),wf=goal>0?Math.min(ml/goal,1):0;
+  if(goal>0)ratios.push(wf);
+  var frac=ratios.length?ratios.reduce(function(x,y){return x+y},0)/ratios.length:0;
+  return {tot:tot,done:done,over:over,pf:tot?done/tot:0,ml:ml,goal:goal,wf:wf,frac:frac};
+}
+
+/* ---------- Cuenta, sincronización y permisos ---------- */
+function scheduleCloud(){}
+function merge(local,remote){
+  var newer=local.updatedAt>=remote.updatedAt?local:remote;
+  var older=newer===local?remote:local;
+  var logs={},k;
+  for(k in older.logs)logs[k]=older.logs[k];
+  for(k in newer.logs)logs[k]=newer.logs[k];
+  return {profile:newer.profile||older.profile,info:newer.info,supps:newer.supps,targets:newer.targets,water:newer.water,logs:logs,updatedAt:Math.max(local.updatedAt,remote.updatedAt),assignedAt:Math.max(local.assignedAt||0,remote.assignedAt||0)};
+}
+function cleanOverrides(o){
+  var out={};
+  if(!o||typeof o!=='object')return out;
+  Object.keys(FAT).forEach(function(gid){
+    var src=o[gid];if(!src||typeof src!=='object')return;
+    var dst={};
+    Object.keys(src).forEach(function(k){
+      if(typeof src[k]==='string'&&FAT[gid].titles.indexOf(src[k])>-1)dst[k]=src[k];
+    });
+    if(Object.keys(dst).length)out[gid]=dst;
+  });
+  return out;
+}
+function cleanLists(l){
+  var out={};
+  if(!l||typeof l!=='object')return out;
+  Object.keys(FAT).forEach(function(gid){
+    var a=l[gid];
+    if(Array.isArray(a)){
+      var f=FAT[gid].titles.filter(function(t){return a.indexOf(t)>-1});
+      if(f.length&&f.length<FAT[gid].titles.length)out[gid]=f;
+    }
+  });
+  return out;
+}
+function applyAssignment(a){
+  allowedLists=cleanLists(a&&a.lists);
+  if(!a||typeof a!=='object'){lockedTargets=false;return false}
+  var t=normalize({targets:a.targets}).targets;
+  var goal=a.water?Number(a.water.goal):NaN;
+  function apply(){
+    var ch=false;
+    STARS.forEach(function(g){if(state.targets[g.id]!==t[g.id]){state.targets[g.id]=t[g.id];ch=true}});
+    if(isFinite(goal)&&goal>=0&&goal<=10000&&state.water.goal!==Math.round(goal)){state.water.goal=Math.round(goal);ch=true}
+    return ch;
+  }
+  if(a.locked){lockedTargets=true;return apply()}
+  lockedTargets=false;
+  var at=Number(a.updatedAt)||0;
+  if(at>(state.assignedAt||0)){state.assignedAt=at;apply();return true}
+  return false;
+}
+
+/* ---------- Versión independiente: todo se guarda en este dispositivo ---------- */
+function enc(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
+function dec(c){return JSON.parse(decodeURIComponent(escape(atob(c))))}
+function lsGet(k){try{return JSON.parse(localStorage.getItem(LS_BASE+':'+k))}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(LS_BASE+':'+k,JSON.stringify(v));return true}catch(e){return false}}
+function copyText(txt,done){
+  function fb(){
+    var ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;opacity:0;top:0';
+    document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}
+    document.body.removeChild(ta);done(ok);
+  }
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){done(true)},fb);return}}catch(e){}
+  fb();
+}
+function shareText(txt,done){
+  try{if(navigator.share){navigator.share({text:txt}).then(function(){done('shared')},function(){done('cancel')});return}}catch(e){}
+  copyText(txt,function(ok){done(ok?'copied':'fail')});
+}
+function summaryCode(){
+  var st=JSON.parse(JSON.stringify(state));
+  var ks=Object.keys(st.logs).sort().slice(-30),lg={};
+  ks.forEach(function(k){lg[k]=st.logs[k]});st.logs=lg;
+  return 'PORC1:'+enc({pid:state.pid,name:state.profile?state.profile.name:'Sin nombre',st:st});
+}
+function applyCode(txt){
+  var c=String(txt||'').replace(/\s+/g,'');
+  if(c.indexOf('META1:')!==0)return 'Ese código no es válido. Cópialo completo, empieza con META1:';
+  var a;
+  try{a=dec(c.slice(6))}catch(e){return 'No se pudo leer el código. Pídele a tu profesional que lo envíe de nuevo.'}
+  if(!a||typeof a!=='object'||a.v!==1)return 'No se pudo leer el código.';
+  var cl=cleanOverrides(a.cl);delete a.cl;
+  lsSet('meta',a);lsSet('clasif',cl);overrides=cl;
+  state.assignedAt=0;
+  if(applyAssignment(a))changed();
+  render();
+  return a.locked?'Listo. Tu profesional definió tus metas y tú solo anotas tu progreso.':'Listo. Recibiste las metas de tu profesional, y puedes ajustarlas.';
+}
+function fallback(){}
+function initCloud(){
+  lsKey=LS_BASE+':local';state=loadLocal(lsKey);
+  if(!state.pid){state.pid=uid().replace(/[^a-z0-9]/g,'').slice(0,12);if(state.pid.length<6)state.pid=state.pid+'abcdef';saveLocal()}
+  overrides=cleanOverrides(lsGet('clasif'));
+  var a=lsGet('meta');if(a&&typeof a==='object'){if(applyAssignment(a))saveLocal()}
+  isOwner=PRO;cloudStatus='local';ready=true;render();
+}
+
+/* ---------- Dibujo ---------- */
+function starSvg(v){
+  var s='<svg viewBox="0 0 24 24" aria-hidden="true">';
+  if(v===1)s+='<path class="sfill" d="'+STAR+'"/>';
+  else if(v>0)s+='<path class="sfill" clip-path="url(#cp'+Math.round(v*100)+')" d="'+STAR+'"/>';
+  return s+'<path class="sline" d="'+STAR+'"/></svg>';
+}
+function glassSvg(f){
+  var top=38-30*f,xl=11+3*(top-8)/30,xr=33-3*(top-8)/30;
+  var w=f>0?'<path class="wfill" d="M'+xl.toFixed(2)+' '+top.toFixed(2)+'L'+xr.toFixed(2)+' '+top.toFixed(2)+'L30 38L14 38Z"/>':'';
+  return '<svg viewBox="0 0 44 44" aria-hidden="true">'+w+'<path class="gl" d="M11 8h22l-3 30H14z"/></svg>';
+}
+var PLUS='<svg viewBox="0 0 44 44" aria-hidden="true"><circle class="ring" cx="22" cy="22" r="15"/><path d="M22 15v14M15 22h14"/></svg>';
+var CHEV='<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+function cardStyle(g){return '--c:var(--g-'+g.id+');--cs:var(--g-'+g.id+'-s)'}
+function headInfo(g){
+  return '<button class="info" data-info="'+g.id+'" aria-label="Equivalencias de '+esc(g.name)+'"><span class="chip" aria-hidden="true">'+g.ab+'</span><span class="names"><span class="gname">'+esc(g.name)+'</span><span class="gsub">'+esc(g.sub)+'</span></span>'+CHEV+'</button>';
+}
+function weekHtml(st,selKey,cls){
+  var d=fromKey(selKey),dow=(d.getDay()+6)%7,mon=addDays(d,-dow),t=todayKey(),h='';
+  for(var i=0;i<7;i++){
+    var day=addDays(mon,i),k=keyOf(day),s=dayInfo(k,st),C=94.25;
+    h+='<button class="wd '+cls+(k===t?' today':'')+'" data-k="'+k+'" aria-pressed="'+(k===selKey)+'" aria-label="'+dateLong(k)+'">'+
+      '<span class="wl">'+WL[i]+'</span><span class="wring"><svg viewBox="0 0 38 38" aria-hidden="true"><circle class="tr" cx="19" cy="19" r="15"/>'+
+      '<circle class="pr" cx="19" cy="19" r="15" stroke-dasharray="'+C+'" stroke-dashoffset="'+(C*(1-s.frac)).toFixed(2)+'"/></svg>'+
+      '<span class="num">'+day.getDate()+'</span></span></button>';
+  }
+  return h;
+}
+function renderHeader(){
+  $('dateTitle').textContent=dateLong(sel);
+  var diff=Math.round((fromKey(sel)-fromKey(todayKey()))/86400000);
+  var rel=diff===0?'Hoy':diff===-1?'Ayer':diff===1?'Mañana':diff<0?'Hace '+(-diff)+' días':'En '+diff+' días';
+  $('dateSub').textContent=rel+(hasProfile()?' · '+state.profile.name:'');
+  $('goToday').hidden=diff===0;
+  $('openPatients').hidden=!isOwner;
+  var s=dayInfo(sel),pp=Math.round(s.pf*100),wp=Math.round(s.wf*100),u=state.water.unit;
+  $('ptxt').textContent=fmtN(s.done)+' / '+fmtN(s.tot);
+  $('pfill').style.width=pp+'%';$('pbar').setAttribute('aria-valuenow',String(pp));
+  $('wtxt').textContent=s.ml+' / '+s.goal+' '+u;
+  $('wfillbar').style.width=wp+'%';$('wbar').setAttribute('aria-valuenow',String(wp));
+}
+function starCard(g){
+  var t=state.targets[g.id],arr=getArr(sel,g.id),c=sum(arr);
+  var base=Math.ceil(t),n=Math.max(base,arr.length),over=c>t,dots='';
+  for(var i=0;i<n;i++){
+    var v=arr[i]||0;
+    dots+='<button class="dot'+(i>=base?' extra':'')+'" data-g="'+g.id+'" data-i="'+i+'" aria-label="'+esc(g.name)+', porción '+(i+1)+': '+QLABEL[v]+'">'+starSvg(v)+'</button>';
+  }
+  if(c>=t&&n<MAX_SLOTS)dots+='<button class="plus" data-g="'+g.id+'" data-n="'+n+'" aria-label="Agregar una porción extra de '+esc(g.name)+'">'+PLUS+'</button>';
+  return '<section class="card'+(over?' over':'')+'" style="'+cardStyle(g)+'"><div class="card-h">'+headInfo(g)+
+    '<div class="count"><b>'+fmtN(c)+'</b> <span>/ '+fmtN(t)+'</span></div></div>'+
+    (over?'<p class="note warn">Superaste tu meta por '+fmtN(c-t)+(c-t===1?' porción':' porciones')+'</p>':'')+
+    (t===0&&!arr.length?'<p class="gsub" style="margin:0 0 8px">Sin meta para este grupo.</p>':'')+
+    '<div class="dots">'+dots+'</div></section>';
+}
+function inlineList(id){
+  var h='',n=0;
+  GUIDES[id].forEach(function(s){
+    h+='<h4>'+esc(s.title)+'</h4>';
+    s.groups.forEach(function(gr){
+      h+='<ul>';
+      gr.rows.forEach(function(r){n++;h+='<li><span class="a">'+esc(r.a)+'</span>'+((r.m||r.g)?'<span class="m">'+esc(r.m)+(r.g?' · '+esc(r.g):'')+'</span>':'')+'</li>'});
+      h+='</ul>';
+    });
+  });
+  return {html:h,n:n};
+}
+function countCard(g){
+  var arr=getArr(sel,g.id),c=sum(arr),n=Math.min(MAX_SLOTS,arr.length+1),dots='';
+  for(var i=0;i<n;i++){
+    var v=arr[i]||0;
+    dots+='<button class="dot" data-g="'+g.id+'" data-i="'+i+'" aria-label="'+esc(g.name)+', porción '+(i+1)+': '+QLABEL[v]+'">'+starSvg(v)+'</button>';
+  }
+  var il=inlineList(g.id);
+  return '<section class="card free" style="'+cardStyle(g)+'"><div class="card-h">'+headInfo(g)+
+    '<div class="count"><b>'+fmtN(c)+'</b> <span>llevas</span></div></div><div class="dots">'+dots+'</div>'+
+    '<details class="eq" data-eq="'+g.id+'"'+(eqOpen[g.id]?' open':'')+'><summary>Ver equivalencias ('+il.n+' alimentos)</summary>'+il.html+'</details></section>';
+}
+function infoCard(g){
+  var il=inlineList(g.id);
+  return '<section class="card free" style="'+cardStyle(g)+'"><div class="card-h">'+headInfo(g)+'<span class="badge-info">Consulta</span></div>'+
+    '<details class="eq" data-eq="'+g.id+'"'+(eqOpen[g.id]?' open':'')+'><summary>Ver equivalencias ('+il.n+' alimentos)</summary>'+il.html+'</details></section>';
+}
+function waterCard(g){
+  var w=state.water,ml=getWater(sel),glass=w.glass,goal=w.goal;
+  var n=Math.min(24,Math.max(Math.ceil(goal/glass),Math.ceil(ml/glass)));
+  var gl='';
+  for(var i=0;i<n;i++){
+    var f=Math.max(0,Math.min(1,(ml-i*glass)/glass));
+    gl+='<button class="dot" data-glass="'+i+'" aria-label="Vaso '+(i+1)+' de '+glass+' '+w.unit+': '+(f>=1?'lleno':f>0?'parcial':'vacío')+'">'+glassSvg(f)+'</button>';
+  }
+  var done=goal>0&&ml>=goal;
+  return '<section class="card" id="waterCard" style="'+cardStyle(g)+'"><div class="card-h">'+headInfo(g)+
+    '<div class="count"><b>'+ml+'</b> <span>/ '+goal+' '+w.unit+'</span></div></div>'+
+    (done?'<p class="note good">Meta de agua cumplida</p>':'')+
+    '<div class="dots">'+gl+'</div>'+
+    '<div class="wctl"><input class="field" id="wIn" type="text" inputmode="decimal" placeholder="Cantidad" aria-label="Cantidad de agua">'+
+    '<select class="field" id="wUnit" aria-label="Unidad"><option value="ml"'+(w.unit==='ml'?' selected':'')+'>ml</option><option value="cc"'+(w.unit==='cc'?' selected':'')+'>cc</option></select>'+
+    '<button class="btn" data-w="add">Agregar</button><button class="btn soft" data-w="sub">Restar</button>'+
+    '<button class="btn soft" data-w="glass">+1 vaso ('+glass+')</button></div>'+
+    '<p class="wmsg" role="status">'+esc(wMsg)+'</p></section>';
+}
+function uid(){return Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4)}
+function supCard(){
+  var done=getSup(sel),n=state.supps.length,rows='';
+  state.supps.forEach(function(x){
+    var on=done.indexOf(x.id)>-1;
+    rows+='<div class="sp-row"><button class="sp-ck" data-sk="'+x.id+'" aria-pressed="'+on+'" aria-label="Consumido: '+esc(x.name||'suplemento')+'"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>'+
+      '<div class="sp-f"><input class="field" data-sf="name" data-sid="'+x.id+'" value="'+esc(x.name)+'" maxlength="40" placeholder="Nombre" aria-label="Nombre del suplemento">'+
+      '<input class="field" data-sf="dose" data-sid="'+x.id+'" value="'+esc(x.dose)+'" maxlength="40" placeholder="Porción (ej. 1 cápsula)" aria-label="Porción"></div>'+
+      '<button class="sp-del" data-sd="'+x.id+'" aria-label="Quitar '+esc(x.name||'suplemento')+'">×</button></div>';
+  });
+  return '<section class="card" style="--c:var(--g-sup);--cs:var(--g-sup-s)"><div class="card-h"><span class="names"><span class="gname">Suplementos</span><span class="gsub">Cambia el nombre y la porción, y marca cuando lo consumas</span></span>'+
+    '<div class="count"><b>'+done.filter(function(id){return state.supps.some(function(x){return x.id===id})}).length+'</b> <span>/ '+n+'</span></div></div>'+rows+
+    '<button class="btn soft sp-add" data-sa="1">Agregar suplemento</button></section>';
+}
+function getSup(k,st){st=st||state;var d=st.logs[k];return d&&d.sup?d.sup.slice():[]}
+function renderInfo(){
+  var root=$('infoView');
+  if(root.contains&&document.activeElement&&root.contains(document.activeElement)&&root.innerHTML)return;
+  var i=state.info,h='<div class="infoform"><p class="gsub">Completa tu información para que tu profesional te conozca mejor. Se guarda sola y puedes cambiarla cuando quieras. Tu profesional solo la ve si le envías tu resumen desde Ajustes.</p>';
+  h+='<div class="two"><div class="fld"><label for="f_age">Edad</label><input class="field" id="f_age" data-f="age" type="text" inputmode="numeric" maxlength="3" value="'+esc(i.age||'')+'"></div>'+
+    '<div class="fld"><label for="f_gender">Género</label><select class="field" id="f_gender" data-f="gender"><option value=""></option>'+
+    ['Femenino','Masculino','No binario','Prefiero no decirlo'].map(function(o){return '<option'+(i.gender===o?' selected':'')+'>'+o+'</option>'}).join('')+'</select></div></div>';
+  var ph={goals:'Ej. bajar de peso, ganar masa muscular, comer más ordenado',activity:'Ej. camino 30 minutos, gimnasio 3 veces por semana',work:'A qué te dedicas o qué estudias, y tus horarios',allergies:'Alimentos que te hacen mal o a los que eres alérgico/a',meds:'Nombre y dosis, si consumes alguno',supps:'Vitaminas, proteínas u otros que tomas'};
+  INFO.slice(2).forEach(function(f){
+    h+='<div class="fld"><label for="f_'+f.id+'">'+f.label+'</label>'+(f.id==='work'?'<input class="field" id="f_work" data-f="work" type="text" maxlength="300" placeholder="'+ph.work+'" value="'+esc(i.work||'')+'">'
+      :'<textarea class="field" id="f_'+f.id+'" data-f="'+f.id+'" maxlength="'+f.max+'" placeholder="'+ph[f.id]+'">'+esc(i[f.id]||'')+'</textarea>')+'</div>';
+  });
+  h+='<p class="saved" role="status" id="infoSaved"></p></div>';
+  root.innerHTML=h;
+}
+function renderList(){
+  var ae=document.activeElement;
+  if(ae&&ae.getAttribute&&ae.getAttribute('data-sf'))return;
+  var keep=$('wIn')?$('wIn').value:'';
+  var h='';
+  GROUPS.forEach(function(g){h+=g.kind==='stars'?starCard(g):g.kind==='free'?countCard(g):g.kind==='info'?infoCard(g):waterCard(g)});
+  h+=supCard();
+  $('list').innerHTML=h;
+  if(keep&&$('wIn'))$('wIn').value=keep;
+}
+function renderWelcome(){
+  var st=$('wStatus'),inp=$('wName');
+  if(!nameTouched&&!inp.value&&prefillName)inp.value=prefillName;
+  st.textContent=PRO?'Versión profesional: tus datos y los de tus pacientes se guardan solo en este dispositivo.':'Tus datos se guardan solo en este teléfono. Si borras los datos del navegador, se pierden.';
+  if(0)st.textContent=cloudStatus==='on'
+    ?'Sesión iniciada con tu cuenta de Claude. Tu avance queda guardado en ella y no se mezcla con el de otras cuentas.'
+    :'No pudimos abrir tu cuenta de Claude. Tu avance se guardará solo en este navegador.';
+}
+function render(){
+  var show=!ready?'splash':!hasProfile()?'welcome':'app';
+  $('splash').hidden=show!=='splash';$('welcome').hidden=show!=='welcome';$('app').hidden=show!=='app';
+  if(show==='welcome')renderWelcome();
+  if(show!=='app')return;
+  var day=view==='day';
+  renderHeader();
+  $('week').hidden=!day;$('list').hidden=!day;$('infoView').hidden=day;
+  $('prev').hidden=!day;$('next').hidden=!day;document.querySelector('.prog2').hidden=!day;
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-tab')===view))});
+  if(day){$('week').innerHTML=weekHtml(state,sel,'');renderList()}
+  else{$('dateTitle').textContent='Mi información';$('dateSub').textContent=hasProfile()?state.profile.name:'';$('goToday').hidden=true;renderInfo()}
+  if(sheetMode==='settings')renderSettings();
+  if(sheetMode==='patients')renderPatients();
+}
+
+/* ---------- Interacción ---------- */
+function tapStar(gid,i){
+  var g=groupById(gid),step=g&&g.q?0.25:0.5;
+  var arr=getArr(sel,gid);
+  while(arr.length<=i)arr.push(0);
+  var v=arr[i];
+  arr[i]=v>=1?0:Math.min(1,(Math.floor(v/step+1e-9)+1)*step);
+  setArr(sel,gid,arr);changed();render();
+  try{if(navigator.vibrate)navigator.vibrate(8)}catch(e){}
+}
+function addExtra(gid,n){
+  var g=groupById(gid);
+  var arr=getArr(sel,gid);
+  while(arr.length<n)arr.push(0);
+  arr[n]=g&&g.q?0.25:0.5;
+  setArr(sel,gid,arr);changed();render();
+}
+function waterAction(kind){
+  var w=state.water,ml=getWater(sel),v;
+  if(kind==='glass'){v=w.glass;wMsg=''}
+  else{
+    var el=$('wIn');
+    v=el?Number(String(el.value).trim().replace(',','.')):NaN;
+    if(!(v>0)){wMsg='Escribe una cantidad mayor que 0 en '+w.unit+'.';renderList();return}
+    wMsg='';
+  }
+  setWater(sel,kind==='sub'?ml-v:ml+v);
+  var inp=$('wIn');if(inp)inp.value='';
+  changed();render();
+}
+function tapGlass(i){
+  var glass=state.water.glass,ml=getWater(sel);
+  var f=Math.max(0,Math.min(1,(ml-i*glass)/glass));
+  setWater(sel,f<1?(i+1)*glass:i*glass);
+  wMsg='';changed();render();
+  try{if(navigator.vibrate)navigator.vibrate(8)}catch(e){}
+}
+function shift(n){sel=keyOf(addDays(fromKey(sel),n));wMsg='';render()}
+
+$('prev').addEventListener('click',function(){shift(-1)});
+$('next').addEventListener('click',function(){shift(1)});
+$('goToday').addEventListener('click',function(){sel=todayKey();wMsg='';render()});
+$('week').addEventListener('click',function(e){
+  var b=e.target.closest('.wd');if(b){sel=b.getAttribute('data-k');wMsg='';render()}
+});
+$('list').addEventListener('click',function(e){
+  var dot=e.target.closest('.dot');
+  if(dot){
+    if(dot.hasAttribute('data-glass'))tapGlass(Number(dot.getAttribute('data-glass')));
+    else tapStar(dot.getAttribute('data-g'),Number(dot.getAttribute('data-i')));
+    return;
+  }
+  var sk=e.target.closest('[data-sk]');
+  if(sk){
+    var id=sk.getAttribute('data-sk'),cur=getSup(sel),ix=cur.indexOf(id);
+    if(ix>-1)cur.splice(ix,1);else cur.push(id);
+    var d=state.logs[sel]||(state.logs[sel]={});
+    if(cur.length)d.sup=cur;else delete d.sup;
+    cleanDay(sel);changed();render();return;
+  }
+  var sd=e.target.closest('[data-sd]');
+  if(sd){
+    var did=sd.getAttribute('data-sd');
+    state.supps=state.supps.filter(function(x){return x.id!==did});
+    changed();render();return;
+  }
+  if(e.target.closest('[data-sa]')){
+    if(state.supps.length<20){state.supps.push({id:uid().replace(/[^a-z0-9]/g,'').slice(0,10)||'s'+state.supps.length,name:'',dose:''});changed();render();
+      var ins=$('list').querySelectorAll('[data-sf="name"]');if(ins.length&&ins[ins.length-1].focus)ins[ins.length-1].focus();}
+    return;
+  }
+  var plus=e.target.closest('.plus');
+  if(plus){addExtra(plus.getAttribute('data-g'),Number(plus.getAttribute('data-n')));return}
+  var wb=e.target.closest('[data-w]');
+  if(wb){waterAction(wb.getAttribute('data-w'));return}
+  var info=e.target.closest('.info');
+  if(info)openGuide(info.getAttribute('data-info'));
+});
+$('tabbar').addEventListener('click',function(e){
+  var b=e.target.closest('.tab');if(!b)return;
+  view=b.getAttribute('data-tab');window.scrollTo(0,0);render();
+});
+$('infoView').addEventListener('change',function(e){
+  var f=e.target.getAttribute&&e.target.getAttribute('data-f');if(!f)return;
+  var def=INFO.filter(function(x){return x.id===f})[0],v=String(e.target.value).trim();
+  if(f==='age'){v=v.replace(/[^0-9]/g,'');if(v&&(Number(v)<1||Number(v)>120))v='';e.target.value=v}
+  if(v)state.info[f]=v.slice(0,def.max);else delete state.info[f];
+  changed();var sv=$('infoSaved');if(sv)sv.textContent='Guardado';
+});
+$('list').addEventListener('change',function(e){
+  var sf=e.target.getAttribute&&e.target.getAttribute('data-sf');
+  if(sf){
+    var sid=e.target.getAttribute('data-sid');
+    state.supps.forEach(function(x){if(x.id===sid)x[sf]=String(e.target.value).trim().slice(0,40)});
+    changed();render();return;
+  }
+  if(e.target.id==='wUnit'){state.water.unit=e.target.value;changed();render()}
+});
+$('list').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&e.target.id==='wIn'){e.preventDefault();waterAction('add')}
+});
+$('list').addEventListener('toggle',function(e){
+  if(e.target.classList&&e.target.classList.contains('eq'))eqOpen[e.target.getAttribute('data-eq')]=e.target.open;
+},true);
+
+$('wName').addEventListener('input',function(){nameTouched=true});
+$('wForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var name=$('wName').value.trim().slice(0,40);
+  if(!name){$('wStatus').textContent='Escribe tu nombre para continuar.';$('wName').focus();return}
+  state.profile={name:name};changed();render();
+});
+
+/* ---------- Hojas inferiores ---------- */
+function openSheet(){
+  lastFocus=document.activeElement;
+  $('scrim').hidden=false;$('sheet').hidden=false;
+  $('sheet').scrollTop=0;
+  requestAnimationFrame(function(){
+    $('scrim').classList.add('open');$('sheet').classList.add('open');
+    $('sheetClose').focus({preventScroll:true});
+  });
+}
+function closeSheet(){
+  if(!sheetMode)return;
+  sheetMode='';confirmClear=false;editMode=false;
+  $('scrim').classList.remove('open');$('sheet').classList.remove('open');
+  setTimeout(function(){if(!sheetMode){$('scrim').hidden=true;$('sheet').hidden=true}},230);
+  if(lastFocus&&lastFocus.focus)lastFocus.focus({preventScroll:true});
+}
+
+/* Guía de equivalencias (con clasificación editable solo por la creadora) */
+function foodKey(title,sub,a,m){
+  return [title,sub||'',a,m].map(function(x){return nrm(x).replace(/[.\/]/g,'')}).join('|');
+}
+function effectiveGuide(gid){
+  var base=GUIDES[gid],fat=FAT[gid];
+  if(!fat)return base;
+  var ov=overrides[gid]||{};
+  var secs=base.map(function(s){return {title:s.title,macro:s.macro,groups:[]}});
+  base.forEach(function(s,si){
+    s.groups.forEach(function(gr){
+      gr.rows.forEach(function(r){
+        var editable=fat.titles.indexOf(s.title)>-1,key=foodKey(s.title,gr.sub,r.a,r.m),ti=si;
+        if(editable&&ov[key]){var j=-1;secs.forEach(function(x,idx){if(x.title===ov[key])j=idx});if(j>-1)ti=j}
+        var dst=secs[ti],grp=null;
+        dst.groups.forEach(function(x){if(x.sub===gr.sub)grp=x});
+        if(!grp){grp={sub:gr.sub,rows:[]};dst.groups.push(grp)}
+        grp.rows.push({a:r.a,m:r.m,g:r.g,key:key,editable:editable,cur:dst.title});
+      });
+    });
+  });
+  return secs;
+}
+function macroTxt(m){return m[0]+' kcal · '+m[1]+' g carbohidratos · '+m[2]+' g lípidos · '+m[3]+' g proteínas'}
+function modeOf(t){return /crud/i.test(t)?'crudo':/cocid/i.test(t)?'cocido':''}
+function guideHtml(gid){
+  var h='',fat=FAT[gid];
+  effectiveGuide(gid).forEach(function(s){
+    if(!s.groups.length&&!(editMode&&fat&&fat.titles.indexOf(s.title)>-1))return;
+    var isLv=fat&&fat.titles.indexOf(s.title)>-1;
+    if(isLv&&!isOwner&&allowedLists[gid]&&allowedLists[gid].indexOf(s.title)<0)return;
+    h+='<section class="gsec" data-lv="'+(isLv?esc(s.title):'')+'" data-m="'+modeOf(s.title)+'"><h3>'+esc(s.title)+'</h3>';
+    if(isOwner&&s.macro)h+='<p class="macro">Aporte por porción (solo lo ves tú): '+esc(macroTxt(s.macro))+'</p>';
+    if(!s.groups.length)h+='<p class="gsub">Sin alimentos en esta clasificación.</p>';
+    s.groups.forEach(function(gr){
+      h+='<div class="subgrp" data-m="'+modeOf(gr.sub||'')+'">'+(gr.sub?'<h4>'+esc(gr.sub)+'</h4>':'')+'<ul>';
+      gr.rows.forEach(function(r){
+        var mv='';
+        if(editMode&&isOwner&&r.editable&&fat){
+          mv='<select class="field mv" data-key="'+esc(r.key)+'" aria-label="Clasificación de '+esc(r.a)+'">'+
+            fat.titles.map(function(t,i){return '<option value="'+esc(t)+'"'+(t===r.cur?' selected':'')+'>'+esc(fat.labels[i])+'</option>'}).join('')+'</select>';
+        }
+        h+='<li data-t="'+esc(nrm(r.a))+'"><span class="a">'+esc(r.a)+'</span>'+((r.m||r.g)?'<span class="m">'+esc(r.m)+(r.g?' · '+esc(r.g):'')+'</span>':'')+mv+'</li>';
+      });
+      h+='</ul></div>';
+    });
+    h+='</section>';
+  });
+  return h;
+}
+function filterGuide(){
+  var q=nrm(($('gsearch')?$('gsearch').value:'').trim()),m=guideMode,anySec=false;
+  Array.prototype.forEach.call($('sheetBody').querySelectorAll('.gsec'),function(sec){
+    var sm=sec.getAttribute('data-m'),secHide=!!(m&&sm&&sm!==m)||!!(guideLv&&sec.getAttribute('data-lv')!==guideLv),any=false;
+    var sgs=sec.querySelectorAll('.subgrp');
+    Array.prototype.forEach.call(sgs,function(sg){
+      var gm=sg.getAttribute('data-m'),sgHide=secHide||!!(m&&gm&&gm!==m),anyS=false;
+      Array.prototype.forEach.call(sg.querySelectorAll('li'),function(li){
+        var ok=!q||li.getAttribute('data-t').indexOf(q)>-1;
+        li.hidden=!ok;if(ok)anyS=true;
+      });
+      sg.hidden=sgHide||!anyS;if(!sg.hidden)any=true;
+    });
+    sec.hidden=secHide||(!any&&sgs.length>0);
+    if(!sec.hidden)anySec=true;
+  });
+  var none=$('gnone');if(none)none.hidden=anySec;
+}
+function buildGuide(gid){
+  var g=groupById(gid);if(!g)return;
+  var meta=g.kind==='stars'?'Tu meta: '+fmtN(state.targets[g.id])+(state.targets[g.id]===1?' porción':' porciones')+' al día. Cada estrella es una porción.'
+    :g.kind==='free'?'Consumo libre: no tiene meta. Anota cuántas porciones llevas hoy. Estas son sus equivalencias.'
+    :g.kind==='info'?'Alimentos sin aporte de macronutrientes: no se registran porciones.'
+    :'Meta de hoy: '+state.water.goal+' '+state.water.unit+'. El vaso de la app es de '+state.water.glass+' '+state.water.unit+' y puedes cambiarlo en ajustes.';
+  var search=g.kind==='water'?'':'<input class="field gsearch" id="gsearch" type="search" placeholder="Buscar alimento" aria-label="Buscar alimento">';
+  var hasModes=GUIDES[gid].some(function(sec){return modeOf(sec.title)||sec.groups.some(function(gr){return modeOf(gr.sub||'')})});
+  var chips=hasModes?'<div class="mchips" role="group" aria-label="Filtrar por preparación">'+
+    [['','Todo'],['crudo','Crudo'],['cocido','Cocido']].map(function(x){return '<button class="mchip" data-mode="'+x[0]+'" aria-pressed="'+(guideMode===x[0])+'">'+x[1]+'</button>'}).join('')+'</div>':'';
+  var lvc='';
+  if(FAT[gid]){
+    var lvs=FAT[gid].titles.map(function(t,i){return {t:t,l:FAT[gid].labels[i]}}).filter(function(x){return isOwner||!allowedLists[gid]||allowedLists[gid].indexOf(x.t)>-1});
+    if(lvs.length>1){
+      lvc='<div class="mchips lv" role="group" aria-label="Lista por contenido de grasa"><button class="mchip" data-lv="" aria-pressed="'+(guideLv==='')+'">Todas</button>'+
+        lvs.map(function(x){return '<button class="mchip" data-lv="'+esc(x.t)+'" aria-pressed="'+(guideLv===x.t)+'">'+esc(x.l)+'</button>'}).join('')+'</div>';
+    }
+  }
+  var edit='';
+  if(isOwner&&FAT[gid]){
+    edit='<div class="editbar"><button class="btn soft" id="editToggle">'+(editMode?'Terminar edición':'Editar clasificación')+'</button>'+
+      (editMode?'<p class="gsub">Cambia cada alimento entre '+FAT[gid].labels.join(', ').toLowerCase()+'. Los cambios los ven todas las personas que usan la app.</p><p class="wmsg" id="editMsg" role="status"></p>':'')+'</div>';
+  }
+  $('sheetBody').innerHTML='<div class="sh-title" style="'+cardStyle(g)+'"><span class="chip" aria-hidden="true">'+g.ab+'</span><h2>'+esc(g.name)+'</h2></div>'+
+    '<p class="sh-meta">'+esc(meta)+'</p>'+edit+lvc+chips+search+guideHtml(gid)+'<p class="none" id="gnone" hidden>No hay alimentos con ese nombre.</p>';
+  if($('gsearch'))$('gsearch').addEventListener('input',function(){filterGuide()});
+  filterGuide();
+}
+function openGuide(gid){
+  guideGid=gid;editMode=false;guideMode='';guideLv='';sheetMode='guide';
+  buildGuide(gid);
+  $('sheet').setAttribute('aria-label','Equivalencias de '+groupById(gid).name);
+  openSheet();
+}
+function refreshGuide(){
+  if(sheetMode!=='guide'||!guideGid)return;
+  var top=$('sheet').scrollTop,q=$('gsearch')?$('gsearch').value:'';
+  buildGuide(guideGid);
+  if(q&&$('gsearch')){$('gsearch').value=q;filterGuide()}
+  $('sheet').scrollTop=top;
+}
+function saveOverride(key,title){
+  var gid=guideGid;if(!gid||!FAT[gid]||!isOwner)return;
+  var orig=null;
+  GUIDES[gid].forEach(function(s){s.groups.forEach(function(gr){gr.rows.forEach(function(r){
+    if(foodKey(s.title,gr.sub,r.a,r.m)===key)orig=s.title;
+  })})});
+  if(orig===null)return;
+  var cur=overrides[gid]?JSON.parse(JSON.stringify(overrides[gid])):{};
+  if(title===orig)delete cur[key];else cur[key]=title;
+  var next=JSON.parse(JSON.stringify(overrides));
+  if(Object.keys(cur).length)next[gid]=cur;else delete next[gid];
+  overrides=next;lsSet('clasif',next);
+  refreshGuide();
+}
+
+/* Ajustes */
+var setMsg='';
+function blk(){
+  return '<p class="set-h">Mi profesional</p><p class="gsub">Pega el código que te envió tu profesional para recibir tus metas y tus listas de alimentos.</p>'+
+    '<div class="set-block"><textarea class="field" id="setCode" rows="3" style="min-height:76px;padding:10px 12px" placeholder="META1:..." aria-label="Código de tu profesional"></textarea></div>'+
+    '<button class="btn soft" id="applyCode" style="width:100%">Aplicar código</button>'+
+    '<p class="set-h">Enviar mi resumen</p><p class="gsub">Envía tu información y los últimos 30 días a tu profesional por WhatsApp o correo.</p>'+
+    '<button class="btn" id="sumShare" style="width:100%">Enviar mi resumen</button><button class="btn soft" id="sumCopy" style="width:100%;margin-top:8px">Copiar mi resumen</button>'+
+    '<p class="wmsg" role="status" id="setMsg">'+esc(setMsg)+'</p>';
+}
+function renderSettings(){
+  var rows=STARS.map(function(g){
+    var t=state.targets[g.id];
+    return '<div class="set-row" style="'+cardStyle(g)+'"><span class="chip" aria-hidden="true">'+g.ab+'</span><span class="gname">'+esc(g.name)+'</span>'+
+      '<div class="step"><button data-g="'+g.id+'" data-d="-1" aria-label="Menos '+esc(g.name)+'"'+(t<=0||lockedTargets?' disabled':'')+'>−</button><output aria-label="Meta de '+esc(g.name)+'">'+fmtN(t)+'</output><button data-g="'+g.id+'" data-d="1" aria-label="Más '+esc(g.name)+'"'+(t>=12||lockedTargets?' disabled':'')+'>+</button></div></div>';
+  }).join('');
+  var w=state.water;
+  $('sheetBody').innerHTML='<div class="sh-title"><h2>Metas y ajustes</h2></div>'+
+    '<div class="set-block"><label for="setName">Tu nombre</label><input class="field" id="setName" type="text" maxlength="40" value="'+esc(state.profile?state.profile.name:'')+'"></div>'+
+    '<p class="set-h">Porciones por día</p>'+(lockedTargets?'<p class="lockinfo">Tu profesional definió estas metas. Tú solo anotas tu progreso.</p>':'')+rows+
+    '<p class="set-h">Agua</p>'+
+    '<div class="set-block"><label for="setGoal">Meta de agua ('+w.unit+')</label><input class="field" id="setGoal" type="text" inputmode="numeric" value="'+w.goal+'"'+(lockedTargets?' readonly':'')+'></div>'+
+    '<div class="set-block"><label for="setGlass">Tamaño del vaso ('+w.unit+')</label><input class="field" id="setGlass" type="text" inputmode="numeric" value="'+w.glass+'"></div>'+
+    '<button class="btn" id="settingsDone" style="width:100%;margin-top:14px">Listo</button>'+
+    '<button class="ghost" id="clearDay">'+(confirmClear?'Toca de nuevo para borrar este día':'Borrar los registros de este día')+'</button>'+
+    (PRO?'':blk())+'<p class="fine">Tus registros se guardan solo en este dispositivo. Si borras los datos del navegador, se pierden.'+(PRO?'':' Tu profesional solo ve tu información y tu progreso si le envías tu resumen.')+'</p>';
+}
+function openSettings(){sheetMode='settings';confirmClear=false;renderSettings();$('sheet').setAttribute('aria-label','Metas y ajustes');openSheet()}
+$('openSettings').addEventListener('click',openSettings);
+
+/* Panel de pacientes: solo lo ve y lo lee la creadora (las reglas de acceso lo hacen cumplir) */
+function lastDay(st){var ks=Object.keys(st.logs).sort();return ks.length?ks[ks.length-1]:null}
+function avg7(st){
+  var t=fromKey(todayKey()),s=0;
+  for(var i=0;i<7;i++)s+=dayInfo(keyOf(addDays(t,-i)),st).frac;
+  return s/7;
+}
+function loadPatients(){
+  pat.err='';
+  var m=lsGet('pacientes')||{};
+  pat.list=Object.keys(m).map(function(id){
+    var raw=m[id]||{};
+    return {id:id,name:(typeof raw.name==='string'&&raw.name.trim())||'Sin nombre',st:normalize(raw.st)};
+  }).sort(function(a,b){return (b.st.updatedAt||0)-(a.st.updatedAt||0)});
+  renderPatients();
+}
+function importSummary(txt){
+  var c=String(txt||'').replace(/\s+/g,'');
+  if(c.indexOf('PORC1:')!==0)return 'Ese resumen no es válido. Debe empezar con PORC1:';
+  var o;try{o=dec(c.slice(6))}catch(e){return 'No se pudo leer el resumen.'}
+  if(!o||typeof o.pid!=='string'||!/^[a-z0-9]{6,20}$/.test(o.pid)||!o.st)return 'No se pudo leer el resumen.';
+  var m=lsGet('pacientes')||{};
+  m[o.pid]={name:String(o.name||'Sin nombre').slice(0,40),st:normalize(o.st),at:Date.now()};
+  if(!lsSet('pacientes',m))return 'No se pudo guardar en este dispositivo.';
+  loadPatients();
+  return 'Resumen de '+m[o.pid].name+' cargado.';
+}
+function renderPatients(){
+  if(sheetMode!=='patients')return;
+  var top=$('sheet').scrollTop,h='';
+  if(pat.sel){
+    var p=null;(pat.list||[]).forEach(function(x){if(x.id===pat.sel)p=x});
+    if(!p){pat.sel=null;renderPatients();return}
+    var st=p.st,k=pat.day,s=dayInfo(k,st),u=st.water.unit;
+    h+='<button class="back" data-back="1">‹ Pacientes</button>'+
+      '<div class="sh-title"><h2>'+esc(p.name)+'</h2></div>'+
+      '<div class="pnav"><button class="icon-btn" data-pd="-1" aria-label="Día anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><b>'+esc(dateLong(k))+'</b><button class="icon-btn" data-pd="1" aria-label="Día siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>'+
+      '<div class="prog2"><div class="pg"><div class="pg-t"><span>Porciones</span><b>'+fmtN(s.done)+' / '+fmtN(s.tot)+'</b></div><div class="bar"><i style="width:'+Math.round(s.pf*100)+'%"></i></div></div>'+
+      '<div class="pg"><div class="pg-t"><span>Agua</span><b>'+s.ml+' / '+s.goal+' '+u+'</b></div><div class="bar water"><i style="width:'+Math.round(s.wf*100)+'%"></i></div></div></div>'+
+      '<nav class="week" aria-label="Semana">'+weekHtml(st,k,'pwd')+'</nav>';
+    var ik=INFO.filter(function(f){return st.info[f.id]});
+    h+='<details class="pinfo"><summary><b>Información del paciente</b></summary>'+(ik.length?'<dl>'+ik.map(function(f){return '<dt>'+f.label+'</dt><dd>'+esc(st.info[f.id])+'</dd>'}).join('')+'</dl>':'<p class="gsub">Todavía no la completa.</p>')+'</details>';
+    STARS.forEach(function(g){
+      var t=st.targets[g.id],arr=getArr(k,g.id,st),c=sum(arr),n=Math.max(Math.ceil(t),arr.length),stars='';
+      for(var i=0;i<n;i++)stars+=starSvg(arr[i]||0);
+      h+='<div class="ro" style="'+cardStyle(g)+'"><div class="names"><span class="gname">'+esc(g.name)+'</span><div class="rostars">'+stars+'</div></div>'+
+        '<div class="count"'+(c>t?' style="color:var(--warn)"':'')+'><b'+(c>t?' style="color:var(--warn)"':'')+'>'+fmtN(c)+'</b> <span>/ '+fmtN(t)+'</span></div></div>';
+    });
+    var vg=groupById('vli'),va=getArr(k,'vli',st),vs='';
+    va.forEach(function(v){vs+=starSvg(v)});
+    h+='<div class="ro" style="'+cardStyle(vg)+'"><div class="names"><span class="gname">'+esc(vg.name)+'</span><span class="gsub">Sin meta: solo lo que anotó</span><div class="rostars">'+vs+'</div></div>'+
+      '<div class="count"><b>'+fmtN(sum(va))+'</b> <span>porciones</span></div></div>';
+    if(st.supps.length){
+      var sd2=getSup(k,st);
+      h+='<div class="ro" style="--c:var(--g-sup);--cs:var(--g-sup-s)"><div class="names"><span class="gname">Suplementos</span>'+st.supps.map(function(x){return '<span class="gsub">'+(sd2.indexOf(x.id)>-1?'✓ ':'○ ')+esc(x.name||'Sin nombre')+(x.dose?' · '+esc(x.dose):'')+'</span>'}).join('')+'</div></div>';
+    }
+    h+='<div class="ro" style="--c:var(--g-agu);--cs:var(--g-agu-s)"><div class="names"><span class="gname">Agua</span></div><div class="count"><b>'+s.ml+'</b> <span>/ '+s.goal+' '+u+'</span></div></div>';
+    if(pat.edit){
+      h+='<div class="edpanel"><p class="set-h">Metas de este paciente</p>';
+      STARS.forEach(function(g){
+        var t=pat.edit.targets[g.id];
+        h+='<div class="set-row" style="'+cardStyle(g)+'"><span class="chip" aria-hidden="true">'+g.ab+'</span><span class="gname">'+esc(g.name)+'</span>'+
+          '<div class="step"><button data-et="'+g.id+'" data-ed="-1" aria-label="Menos '+esc(g.name)+'"'+(t<=0?' disabled':'')+'>−</button><output>'+fmtN(t)+'</output><button data-et="'+g.id+'" data-ed="1" aria-label="Más '+esc(g.name)+'"'+(t>=12?' disabled':'')+'>+</button></div></div>';
+      });
+      h+='<div class="set-block"><label for="patGoal">Meta de agua ('+u+')</label><input class="field" id="patGoal" type="text" inputmode="numeric" value="'+esc(pat.edit.goal)+'"></div>'+
+        lstHtml()+
+        '<label class="chk"><input type="checkbox" id="patLock"'+(pat.edit.locked?' checked':'')+'> Bloquear: el paciente solo anota su progreso</label>'+
+        '<button class="btn" id="patSave" style="width:100%;margin-top:8px">Guardar metas</button>'+
+        '<p class="fine" role="status">'+esc(pat.saveMsg)+'</p>'+(pat.code?'<textarea class="field" id="patCode" rows="3" readonly style="min-height:76px;padding:10px 12px;width:100%">'+esc(pat.code)+'</textarea><button class="btn" id="patShare" style="width:100%;margin-top:8px">Enviar código al paciente</button><button class="btn soft" id="patCopy" style="width:100%;margin-top:8px">Copiar código</button>':'')+'</div>';
+    }
+  }else{
+    h+='<div class="sh-title"><h2>Pacientes</h2></div><p class="sh-meta">Cada vez que un paciente te envíe su resumen, pégalo aquí. Se actualiza su progreso en este dispositivo.</p>'+
+      '<div class="set-block"><textarea class="field" id="impTxt" rows="3" style="min-height:76px;padding:10px 12px" placeholder="PORC1:..." aria-label="Resumen del paciente"></textarea></div><button class="btn" id="impBtn" style="width:100%">Cargar resumen</button><p class="wmsg" role="status">'+esc(pat.impMsg||'')+'</p>';
+    if(pat.list===null)h+='<p class="none">Cargando…</p>';
+    else if(pat.err)h+='<p class="none">'+esc(pat.err)+'</p>';
+    else if(!pat.list.length)h+='<p class="none">Todavía no hay pacientes. Pega arriba el primer resumen que recibas.</p>';
+    else{
+      var t=todayKey();
+      pat.list.forEach(function(p){
+        var ld=lastDay(p.st),today=Math.round(dayInfo(t,p.st).frac*100),w=Math.round(avg7(p.st)*100);
+        h+='<button class="prow" data-pid="'+esc(p.id)+'"><span class="names"><span class="gname">'+esc(p.name)+''+'</span><span class="gsub">'+(ld?'Último registro: '+esc(dateLong(ld)):'Sin registros todavía')+'</span></span>'+
+          '<span class="pstat"><b>'+today+' %</b><span>hoy · '+w+' % en 7 días</span></span></button>';
+      });
+    }
+  }
+  $('sheetBody').innerHTML=h;
+  $('sheet').scrollTop=top;
+}
+function lstHtml(){
+  var h='<p class="set-h">Listas de equivalencias que ve este paciente</p><p class="gsub">Marca las listas que le corresponden. Si dejas todas marcadas, ve todas.</p>';
+  Object.keys(FAT).forEach(function(gid){
+    var cur=pat.edit.lists[gid]||FAT[gid].titles;
+    h+='<div class="set-block"><b>'+esc(groupById(gid).name)+'</b>';
+    FAT[gid].titles.forEach(function(t,i){
+      h+='<label class="chk"><input type="checkbox" data-lg="'+gid+'" data-lt="'+i+'"'+(cur.indexOf(t)>-1?' checked':'')+'> '+esc(FAT[gid].labels[i])+'</label>';
+    });
+    h+='</div>';
+  });
+  return h;
+}
+function openPatientDetail(pid){
+  var p=null;(pat.list||[]).forEach(function(x){if(x.id===pid)p=x});
+  if(!p)return;
+  pat.sel=pid;pat.day=todayKey();pat.saveMsg='';pat.code='';
+  pat.edit={locked:false,lists:{},targets:Object.assign({},p.st.targets),goal:p.st.water.goal};
+  var as=(lsGet('asignaciones')||{})[pid];
+  if(as){
+    var t=normalize({targets:as.targets}).targets,goal=as.water?Number(as.water.goal):NaN;
+    pat.edit={locked:!!as.locked,lists:cleanLists(as.lists),targets:t,goal:isFinite(goal)?goal:p.st.water.goal};
+  }
+  renderPatients();
+}
+function savePatientAssignment(){
+  if(!pat.sel||!pat.edit)return;
+  var e=pat.edit,goal=Math.max(0,Math.min(10000,Math.round(Number(e.goal)||0)));
+  var a={v:1,locked:!!e.locked,targets:e.targets,lists:cleanLists(e.lists),water:{goal:goal},updatedAt:Date.now()};
+  var m=lsGet('asignaciones')||{};m[pat.sel]=a;lsSet('asignaciones',m);
+  var full=JSON.parse(JSON.stringify(a));full.cl=overrides;
+  pat.code='META1:'+enc(full);
+  pat.saveMsg='Código listo. Envíaselo a tu paciente: debe pegarlo en Ajustes, en "Mi profesional".';
+  renderPatients();
+}
+function openPatients(){
+  if(!isOwner)return;
+  sheetMode='patients';pat.sel=null;pat.list=null;pat.day=todayKey();
+  renderPatients();$('sheet').setAttribute('aria-label','Pacientes');openSheet();loadPatients();
+}
+$('openPatients').addEventListener('click',openPatients);
+
+$('sheetBody').addEventListener('click',function(e){
+  if(sheetMode==='settings'){
+    var b=e.target.closest('.step button');
+    if(b&&!b.disabled&&!lockedTargets){
+      var gid=b.getAttribute('data-g'),d=Number(b.getAttribute('data-d'));
+      state.targets[gid]=Math.min(12,Math.max(0,state.targets[gid]+d*0.5));
+      changed();render();return;
+    }
+    if(e.target.closest('#applyCode')){var m=applyCode($('setCode').value);setMsg=m;renderSettings();return}
+    if(e.target.closest('#sumCopy')){copyText(summaryCode(),function(ok){setMsg=ok?'Resumen copiado. Pégalo en un mensaje para tu profesional.':'No se pudo copiar.';var el=$('setMsg');if(el)el.textContent=setMsg});return}
+    if(e.target.closest('#sumShare')){shareText(summaryCode(),function(r){setMsg=r==='shared'?'Resumen enviado.':r==='copied'?'Resumen copiado. Pégalo en un mensaje para tu profesional.':r==='cancel'?'':'No se pudo enviar.';var el=$('setMsg');if(el)el.textContent=setMsg});return}
+    if(e.target.closest('#settingsDone')){closeSheet();return}
+    if(e.target.closest('#clearDay')){
+      if(!confirmClear){
+        confirmClear=true;renderSettings();
+        clearTimeout(confirmTimer);
+        confirmTimer=setTimeout(function(){confirmClear=false;if(sheetMode==='settings')renderSettings()},3500);
+      }else{
+        delete state.logs[sel];confirmClear=false;changed();render();
+      }
+    }
+  }else if(sheetMode==='guide'){
+    var lc=e.target.closest('.mchip[data-lv]');
+    if(lc){
+      guideLv=lc.getAttribute('data-lv');
+      Array.prototype.forEach.call($('sheetBody').querySelectorAll('.mchip[data-lv]'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-lv')===guideLv))});
+      filterGuide();return;
+    }
+    var mc=e.target.closest('.mchip[data-mode]');
+    if(mc){
+      guideMode=mc.getAttribute('data-mode');
+      Array.prototype.forEach.call($('sheetBody').querySelectorAll('.mchip[data-mode]'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-mode')===guideMode))});
+      filterGuide();return;
+    }
+    if(e.target.closest('#editToggle')&&isOwner){editMode=!editMode;buildGuide(guideGid);$('sheet').scrollTop=0}
+  }else if(sheetMode==='patients'){
+    var pr=e.target.closest('.prow');
+    if(pr){openPatientDetail(pr.getAttribute('data-pid'));$('sheet').scrollTop=0;return}
+    if(e.target.closest('[data-back]')){pat.sel=null;renderPatients();return}
+    var pd=e.target.closest('[data-pd]');
+    if(pd){pat.day=keyOf(addDays(fromKey(pat.day),Number(pd.getAttribute('data-pd'))));renderPatients();return}
+    var wd=e.target.closest('.pwd');
+    if(wd){pat.day=wd.getAttribute('data-k');renderPatients();return}
+    var et=e.target.closest('[data-et]');
+    if(et&&!et.disabled&&pat.edit){
+      var eg=et.getAttribute('data-et'),ed=Number(et.getAttribute('data-ed'));
+      pat.edit.targets[eg]=Math.min(12,Math.max(0,pat.edit.targets[eg]+ed*0.5));
+      pat.saveMsg='';renderPatients();return;
+    }
+    if(e.target.closest('#patSave'))savePatientAssignment();
+    if(e.target.closest('#impBtn')){pat.impMsg=importSummary($('impTxt').value);renderPatients();return}
+    if(e.target.closest('#patCopy')){copyText(pat.code,function(ok){pat.saveMsg=ok?'Código copiado.':'No se pudo copiar.';var el=$('sheetBody').querySelector('.fine');if(el)el.textContent=pat.saveMsg});return}
+    if(e.target.closest('#patShare')){shareText(pat.code,function(r){pat.saveMsg=r==='shared'?'Código enviado.':r==='copied'?'Código copiado. Pégalo en un mensaje.':'';var el=$('sheetBody').querySelector('.fine');if(el)el.textContent=pat.saveMsg});return}
+  }
+});
+$('sheetBody').addEventListener('change',function(e){
+  var id=e.target.id;
+  if(sheetMode==='guide'&&e.target.classList.contains('mv')){
+    saveOverride(e.target.getAttribute('data-key'),e.target.value);return;
+  }
+  if(sheetMode==='patients'&&pat.edit){
+    if(e.target.getAttribute&&e.target.getAttribute('data-lg')){
+      var lg=e.target.getAttribute('data-lg'),titles=FAT[lg].titles,sel=titles.filter(function(t,i){
+        var cb=$('sheetBody').querySelector('[data-lg="'+lg+'"][data-lt="'+i+'"]');return cb&&cb.checked});
+      if(!sel.length){sel=titles.slice();}
+      pat.edit.lists[lg]=sel;pat.saveMsg='';renderPatients();return;
+    }
+    if(id==='patLock'){pat.edit.locked=e.target.checked;pat.saveMsg=''}
+    else if(id==='patGoal'){var pg=Number(String(e.target.value).replace(',','.'));if(isFinite(pg)&&pg>=0&&pg<=10000)pat.edit.goal=Math.round(pg);pat.saveMsg=''}
+    return;
+  }
+  if(sheetMode!=='settings')return;
+  if(id==='setName'){
+    var n=e.target.value.trim().slice(0,40);
+    if(n){state.profile={name:n};changed();render()}else{e.target.value=state.profile?state.profile.name:''}
+  }else if(id==='setGoal'&&!lockedTargets){
+    var go=Number(String(e.target.value).replace(',','.'));
+    if(isFinite(go)&&go>=0&&go<=10000){state.water.goal=Math.round(go);changed()}
+    render();
+  }else if(id==='setGlass'){
+    var gl=Number(String(e.target.value).replace(',','.'));
+    if(isFinite(gl)&&gl>=50&&gl<=1000){state.water.glass=Math.round(gl);changed()}
+    render();
+  }
+});
+$('sheetClose').addEventListener('click',closeSheet);
+$('scrim').addEventListener('click',closeSheet);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet()});
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&ready)render()});
+
+render();
+initCloud();
+})();
+</script>
